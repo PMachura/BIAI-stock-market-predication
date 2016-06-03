@@ -1,0 +1,19 @@
+Data sets descriptors
+Dane testowe 
+Dane testowe 
+Single data values descriptors
+ wartosc_1	wartosc_3	 wartosc_1	wartosc_3	 wartosc_1	wartosc_3	 wartosc_1	wartosc_3	 wartosc_1	wartosc_3		 wartosc_2	wartosc_3	 wartosc_2	wartosc_3	 wartosc_2	wartosc_3	
+
+Values from all data set for single trainingElement
+81.0	83.0	71.0	73.0	61.0	63.0	81.0	83.0	71.0	73.0		42.0	43.0	62.0	63.0	52.0	53.0	
+
+											0.0	1.0	2.0	3.0	4.0	5.0	
+
+71.0	73.0	61.0	63.0	51.0	53.0	71.0	73.0	61.0	63.0		32.0	33.0	52.0	53.0	42.0	43.0	
+
+											0.0	1.0	2.0	3.0	4.0	5.0	
+
+61.0	63.0	51.0	53.0	41.0	43.0	61.0	63.0	51.0	53.0		22.0	23.0	42.0	43.0	32.0	33.0	
+
+											0.0	1.0	2.0	3.0	4.0	5.0	
+
