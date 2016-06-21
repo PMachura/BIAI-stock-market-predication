@@ -304,6 +304,8 @@ public class View extends javax.swing.JFrame {
         
         jLabelTestNetwork.setText("Not tested");
         jLabelSaveNetwork.setText("Not saved");
+        jLabelLoadNetwork.setText("Loaded");
+        jLabelCreateNetwork.setText("Not created");
     }
     
     public void setLabelsButtonsAfterNetworkSaving(){
@@ -1351,6 +1353,7 @@ public class View extends javax.swing.JFrame {
         Integer maxIterations = Integer.parseInt(jTextFieldMaxIterations.getText());
 
         network = new MultiLayerPerceptron(TransferFunctionType.TANH, layers);
+    
         network.getLearningRule().setMaxError(maxError);
         network.getLearningRule().setMaxIterations(maxIterations);
         network.getLearningRule().setLearningRate(learningRate);
@@ -1422,6 +1425,7 @@ public class View extends javax.swing.JFrame {
     private void jButtonSaveNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSaveNetworkMouseClicked
         String fileName = jTextFieldSaveNetworkFile.getText();
         network.save(fileName);
+        setLabelsButtonsAfterNetworkSaving();
     }//GEN-LAST:event_jButtonSaveNetworkMouseClicked
 
     
