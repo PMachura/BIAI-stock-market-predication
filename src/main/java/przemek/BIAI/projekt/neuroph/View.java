@@ -31,6 +31,7 @@ public class View extends javax.swing.JFrame {
     boolean isLearningSet = false;
     boolean isTestingSet = false;
     boolean isNetwork = false;
+    boolean isLearnde = false;
 
    
 
@@ -263,6 +264,7 @@ public class View extends javax.swing.JFrame {
         jLabelCreateNetwork.setText("Created");
         
         isNetwork=true;
+        isLearnde=false;
         if(isNetwork && isLearningSet){
             jButtonLearnNetwork.setEnabled(true);
         }
@@ -285,13 +287,14 @@ public class View extends javax.swing.JFrame {
         jLabelPrepareTestingSet.setText("Prepared");
         isTestingSet = true;
         
-        if(isNetwork && isTestingSet){
+        if(isNetwork && isTestingSet && isLearnde){
             jButtonTestNetwork.setEnabled(true);
         }
     }
 
     public void setLabelsButtonsAfterNetworkLoading(){
         isNetwork = true;
+        isLearnde = true;
         if(isNetwork && isLearningSet){
             jButtonLearnNetwork.setEnabled(true);
         }
@@ -307,8 +310,13 @@ public class View extends javax.swing.JFrame {
         jLabelSaveNetwork.setText("Saved");
     }
     
-    public void setLabelsButtonsAfterTestingNetwor(){
+    public void setLabelsButtonsAfterNetworkTesting(){
         jLabelTestNetwork.setText("Tested");
+    }
+    
+    public void setLabelsButtonsAfterNetworkLearning(){
+        isLearnde = true;
+        jLabelLearnNetwork.setText("Learned");
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1352,6 +1360,7 @@ public class View extends javax.swing.JFrame {
 
     private void jButtonLearnNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLearnNetworkMouseClicked
         network.learn(trainingData.learningSet);
+        setLabelsButtonsAfterNetworkLearning();
         
     }//GEN-LAST:event_jButtonLearnNetworkMouseClicked
 
@@ -1389,7 +1398,7 @@ public class View extends javax.swing.JFrame {
         
         try {
             dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, fileName);
-            setLabelsButtonsAfterTestingNetwor();
+            setLabelsButtonsAfterNetworkTesting();
         } catch (Exception ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
