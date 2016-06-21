@@ -277,6 +277,7 @@ class MyDataSet {
             for (SingleData singleData : data) {
                 for (int i = 0; i < singleData.values.length; i++) {
                     singleData.values[i] = singleData.values[i] * maximumValue / 0.8;
+                    System.out.println(singleData.values[i]);
                 }
             }
         }
