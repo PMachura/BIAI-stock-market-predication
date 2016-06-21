@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSetRow;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.util.TransferFunctionType;
@@ -27,8 +28,11 @@ public class View extends javax.swing.JFrame {
     TrainingData trainingData = new TrainingData();
     MultiLayerPerceptron network;
     double[][] result;
+    boolean isLearningSet = false;
+    boolean isTestingSet = false;
+    boolean isNetwork = false;
 
-    ArrayList<Complex> complexGroup = new ArrayList<Complex>();
+   
 
     /**
      * Creates new form View
@@ -235,23 +239,76 @@ public class View extends javax.swing.JFrame {
     }
 
     public void setLabelsButtonsAfterDataSetCreation() {
-      
+
         jButtonCreateNetwork.setEnabled(true);
         jButtonPrepareLearningSet.setEnabled(true);
         jButtonPrepareTestingSet.setEnabled(true);
         jButtonLearnNetwork.setEnabled(false);
         jButtonTestNetwork.setEnabled(false);
-        
+
         jLabelCreateDataSetCollection.setText("Created");
         jLabelPrepareLearningSet.setText("Not prepared");
         jLabelPrepareTestingSet.setText("Not prepared");
+        
+        isLearningSet = false;
+        isTestingSet = false;
+        
     }
 
-    public void setLabelsButtonsAfterNetworkCreation(){
-        jButtonLearnNetwork.setEnabled(true);
+    public void setLabelsButtonsAfterNetworkCreation() {
+        jLabelTestNetwork.setText("Not tested");
+        jLabelLearnNetwork.setText("Not learned");
         jLabelLoadNetwork.setText("Not loaded");
         jLabelSaveNetwork.setText("Not saved");
         jLabelCreateNetwork.setText("Created");
+        
+        isNetwork=true;
+        if(isNetwork && isLearningSet){
+            jButtonLearnNetwork.setEnabled(true);
+        }
+        
+        if(isNetwork && isTestingSet){
+            jButtonTestNetwork.setEnabled(true);
+        }
+    }
+    
+    public void setLabelsButtonsAfterPreparingLearningSet(){
+        jLabelPrepareLearningSet.setText("Prepared");
+        isLearningSet = true;
+        if(isNetwork && isLearningSet){
+            jButtonLearnNetwork.setEnabled(true);
+        }
+        
+    }
+    
+    public void setLabelsButtonsAfterPreparingTestingSet(){
+        jLabelPrepareTestingSet.setText("Prepared");
+        isTestingSet = true;
+        
+        if(isNetwork && isTestingSet){
+            jButtonTestNetwork.setEnabled(true);
+        }
+    }
+
+    public void setLabelsButtonsAfterNetworkLoading(){
+        isNetwork = true;
+        if(isNetwork && isLearningSet){
+            jButtonLearnNetwork.setEnabled(true);
+        }
+        if(isNetwork && isTestingSet){
+            jButtonTestNetwork.setEnabled(true);
+        }
+        
+        jLabelTestNetwork.setText("Not tested");
+        jLabelSaveNetwork.setText("Not saved");
+    }
+    
+    public void setLabelsButtonsAfterNetworkSaving(){
+        jLabelSaveNetwork.setText("Saved");
+    }
+    
+    public void setLabelsButtonsAfterTestingNetwor(){
+        jLabelTestNetwork.setText("Tested");
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -673,8 +730,18 @@ public class View extends javax.swing.JFrame {
         jLabelCreateNetwork.setText("Not created");
 
         jButtonLoadNetwork.setText("Load network");
+        jButtonLoadNetwork.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonLoadNetworkMouseClicked(evt);
+            }
+        });
 
         jButtonSaveNetwork.setText("Save network");
+        jButtonSaveNetwork.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonSaveNetworkMouseClicked(evt);
+            }
+        });
 
         jTextFieldLoadNetworkFile.setText("File name");
 
@@ -1218,14 +1285,16 @@ public class View extends javax.swing.JFrame {
 
     private void jButtonPrepareLearningSetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonPrepareLearningSetMouseClicked
 
-        dataSetCollection.normalize();
+        dataSetCollection.normalizeSimple();
 
         int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
         String startingDate = (String) jComboBoxLearningStartElement.getSelectedItem();
 
         try {
-            trainingData.prepareLearningSet(dataSetCollection, trainingElementAmount, startingDate);
-            jLabelPrepareLearningSet.setText("Created");
+            
+            trainingData.prepareLearningSet(dataSetCollection, trainingElementAmount, startingDate);     
+            setLabelsButtonsAfterPreparingLearningSet();
+            
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -1234,13 +1303,13 @@ public class View extends javax.swing.JFrame {
 
     private void jButtonPrepareTestingSetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonPrepareTestingSetMouseClicked
 
-        dataSetCollection.normalize();
+        dataSetCollection.normalizeSimple();
 
         int trainingElementAmount = Integer.parseInt((String) jComboBoxTestingElementsAmount.getSelectedItem());
         String startingDate = (String) jComboBoxTestingStartElement.getSelectedItem();
         try {
             trainingData.prepareTestingSet(dataSetCollection, trainingElementAmount, startingDate);
-            jLabelPrepareTestingSet.setText("Created");
+            setLabelsButtonsAfterPreparingTestingSet();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -1278,14 +1347,12 @@ public class View extends javax.swing.JFrame {
         network.getLearningRule().setMaxIterations(maxIterations);
         network.getLearningRule().setLearningRate(learningRate);
 
-        jButtonLearnNetwork.setEnabled(true);
-        jButtonTestNetwork.setEnabled(true);
-
-        jLabelCreateNetwork.setText("Created");
+        setLabelsButtonsAfterNetworkCreation();
     }//GEN-LAST:event_jButtonCreateNetworkMouseClicked
 
     private void jButtonLearnNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLearnNetworkMouseClicked
         network.learn(trainingData.learningSet);
+        
     }//GEN-LAST:event_jButtonLearnNetworkMouseClicked
 
     private void jButtonPrepareLearningSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrepareLearningSetActionPerformed
@@ -1315,13 +1382,14 @@ public class View extends javax.swing.JFrame {
         }
         System.out.println();
 
-        dataSetCollection.backNormalizatfionInResult(result);
-
-        dataSetCollection.backNormalization();
-
+        dataSetCollection.backNormalizationInResultSimple(result);
+        dataSetCollection.backNormalizationSimple();
         int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
+        String fileName = jTextFieldTestFileName.getText();
+        
         try {
-            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, "SaveView");
+            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, fileName);
+            setLabelsButtonsAfterTestingNetwor();
         } catch (Exception ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1335,6 +1403,18 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonCreateNetworkActionPerformed
 
+    private void jButtonLoadNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLoadNetworkMouseClicked
+        String fileName = jTextFieldLoadNetworkFile.getText();
+        network = (MultiLayerPerceptron) NeuralNetwork.createFromFile(fileName);
+        setLabelsButtonsAfterNetworkLoading();
+    }//GEN-LAST:event_jButtonLoadNetworkMouseClicked
+
+    private void jButtonSaveNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSaveNetworkMouseClicked
+        String fileName = jTextFieldSaveNetworkFile.getText();
+        network.save(fileName);
+    }//GEN-LAST:event_jButtonSaveNetworkMouseClicked
+
+    
     /**
      * @param args the command line arguments
      */

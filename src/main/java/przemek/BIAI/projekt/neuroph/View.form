@@ -1143,11 +1143,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Load network"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButtonLoadNetworkMouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonSaveNetwork">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save network"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButtonSaveNetworkMouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldLoadNetworkFile">
       <Properties>

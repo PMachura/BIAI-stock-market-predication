@@ -15,60 +15,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import org.neuroph.core.data.DataSet;
-import org.neuroph.core.data.DataSetRow;
 
-/**
- * Represents single row loaded from file
- *
- * @author Przemek
- */
-class SingleData {
-
-    /**
-     * Date
-     */
-    String date;
-    /**
-     * Index value
-     */
-    double[] values;
-
-    public SingleData(String date, double[] values) {
-        this.date = date;
-        this.values = values.clone();
-
-    }
-
-    public SingleData(SingleData data) {
-        this.values = data.values.clone();
-        this.date = data.date;
-    }
-
-    public double findMax() {
-        double max = 0;
-        for (double v : values) {
-            if (v > max) {
-                max = v;
-            }
-        }
-        System.out.println("max " + max);
-        return max;
-
-    }
-
-    @Override
-    public String toString() {
-        String s = "SingleData{" + "date=" + date + " ";
-        for (double v : values) {
-            s += (Double.toString(v) + " ");
-        }
-        return s;
-    }
-
-}
 
 /**
  * Loads data from file Data are saved as an SingleData objects
@@ -81,7 +28,6 @@ public class DataFileHandler {
 
     }
 
-   
     /**
      * Load all data from the file. Save data to arrayList of SingleData Data
      * must have the specified stucture Main Title 1_param_description,
@@ -127,14 +73,15 @@ public class DataFileHandler {
 
             if (loaded.length == valuesNumber) {
                 String[] trimed = new String[loaded.length];
-                double[] trimedDouble = new double[loaded.length - 1];
+                double[] trimedDouble = new double[3];    // double[] trimedDouble = new double[loaded.length - 1]; wczesniejsza z wczytywaniem wszystkiego
                 int i = 0;
                 for (String s : loaded) {
                     trimed[i] = s.trim();
                     i++;
                 }
-                for (i = 1; i < trimed.length; i++) {
+                for (i = 1; i < 4; i++) {   // for (i = 1; i < trimed.length; i++) {  wczesniejasz wersja
                     trimedDouble[i - 1] = Double.parseDouble(trimed[i]);
+                    System.out.println("TRIMED DOUBLE " + trimedDouble[i - 1]);
                 }
 
                 SingleData singleData = new SingleData(trimed[0], trimedDouble);
@@ -326,7 +273,6 @@ public class DataFileHandler {
 
     }
 
-    
     // training Element amount jest niepotrzebne, bo mozna to wywynioskowac z tablicy wynikow - z jej rozmiaru
     public void saveDataSetCollectinForTest(DataSetCollection dataSetCollection, int trainingElementAmount, String startingDate, double[][] results, String fileName) throws Exception {
 
@@ -341,7 +287,6 @@ public class DataFileHandler {
         String output = "";
         String tabulator = "";
         // out.println("\n");
-        
 
         out.println("Single data values descriptors"); //Podajemy z ktorych konkretnie elementow zbiorow danych wypisanych powyzej zbudowana jest siec(Np . dax - open, high)
         for (MyDataSet dataSet : dataSetCollection.dataSets) { //to mozna przestawic wyzej zeby tu tego nie cisnac caly czas
@@ -374,19 +319,18 @@ public class DataFileHandler {
         out.print("\t");
         out.print(output); // tutaj wypisujemy nazwy skladnikow, jakie przypadaja na wyjscia sieci
 
-        
         ArrayList<Integer> startingRow = new ArrayList<Integer>();
         for (MyDataSet dataSet : dataSetCollection.dataSets) {
             startingRow.add(dataSet.calculateStartingElement(startingDate));
         }
-        
+
         out.println("\n");
         out.println("Values from all data set for single trainingElement"); // wartosci 
         for (int i = 0; i < trainingElementAmount; i++) {
 
             input = "";
             output = "";
-            
+
             Integer dataSetIndicator = 0;
             for (MyDataSet dataSet : dataSetCollection.dataSets) { //to mozna przestawic wyzej zeby tu tego nie cisnac caly czas
 
@@ -403,8 +347,8 @@ public class DataFileHandler {
 
                     }
                     /* wypisujemy wartosci bedace prawidlowym wynikiem - teoretycznie nie powinnismy ich znac bo sa to wartosci, ktore przewidujemy
-                       ale jest to testowy program akademicki, w celu weryfikacji dzialania sieci testujemy wartosci, ktore znamy */      
-                    for (int k = 0; k < dataSet.dataOutputNumber; k++) { 
+                       ale jest to testowy program akademicki, w celu weryfikacji dzialania sieci testujemy wartosci, ktore znamy */
+                    for (int k = 0; k < dataSet.dataOutputNumber; k++) {
                         for (int l = 0; l < dataSet.dataOutputValuesNumber; l++) {
                             output += Double.toString(dataSet.data.get(i + k + dataSet.dataInputNumber + dataSet.inOutDataDistance + startingRow.get(dataSetIndicator)).values[dataSet.outValuesIndicator[l]]) + "\t";
                         }
@@ -412,7 +356,7 @@ public class DataFileHandler {
                     }
 
                 }
-                dataSetIndicator ++;
+                dataSetIndicator++;
             }
 
             out.print(input + "\t");
@@ -431,7 +375,5 @@ public class DataFileHandler {
         out.close();
 
     }
-
-   
 
 }
