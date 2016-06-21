@@ -129,8 +129,9 @@ public class DataSetCollection {
         
         for(int i = 0 ; i < result.length ; i ++){
             int indicator = 0;
-            for(int j =0; j <result[i].length ; i ++){
+            for(int j =0; j <result[i].length ; j ++){
                 result[i][j] = result[i][j] * maximumValues.get(indicator) / 0.8;
+                System.out.print(result[i][j] + " ");
                 indicator++;
                 if (indicator == maximumValues.size()) {
                     indicator = 0;
