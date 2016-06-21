@@ -1395,6 +1395,7 @@ public class View extends javax.swing.JFrame {
         dataSetCollection.backNormalizationSimple();
         int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
         String fileName = jTextFieldTestFileName.getText();
+        fileName+=".txt";
         
         try {
             dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, fileName);
