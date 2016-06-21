@@ -234,6 +234,25 @@ public class View extends javax.swing.JFrame {
         return outputIndicators;
     }
 
+    public void setLabelsButtonsAfterDataSetCreation() {
+      
+        jButtonCreateNetwork.setEnabled(true);
+        jButtonPrepareLearningSet.setEnabled(true);
+        jButtonPrepareTestingSet.setEnabled(true);
+        jButtonLearnNetwork.setEnabled(false);
+        jButtonTestNetwork.setEnabled(false);
+        
+        jLabelCreateDataSetCollection.setText("Created");
+        jLabelPrepareLearningSet.setText("Not prepared");
+        jLabelPrepareTestingSet.setText("Not prepared");
+    }
+
+    public void setLabelsButtonsAfterNetworkCreation(){
+        jButtonLearnNetwork.setEnabled(true);
+        jLabelLoadNetwork.setText("Not loaded");
+        jLabelSaveNetwork.setText("Not saved");
+        jLabelCreateNetwork.setText("Created");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -332,6 +351,15 @@ public class View extends javax.swing.JFrame {
         jLabelPrepareLearningSet = new javax.swing.JLabel();
         jLabelPrepareTestingSet = new javax.swing.JLabel();
         jLabelCreateNetwork = new javax.swing.JLabel();
+        jButtonLoadNetwork = new javax.swing.JButton();
+        jButtonSaveNetwork = new javax.swing.JButton();
+        jTextFieldLoadNetworkFile = new javax.swing.JTextField();
+        jTextFieldSaveNetworkFile = new javax.swing.JTextField();
+        jLabelLoadNetwork = new javax.swing.JLabel();
+        jLabelSaveNetwork = new javax.swing.JLabel();
+        jLabelLearnNetwork = new javax.swing.JLabel();
+        jTextFieldTestFileName = new javax.swing.JTextField();
+        jLabelTestNetwork = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -352,10 +380,13 @@ public class View extends javax.swing.JFrame {
         jCheckBoxDaxInputLow.setText("Low");
 
         jCheckBoxDaxInputClose.setText("Close");
+        jCheckBoxDaxInputClose.setEnabled(false);
 
         jCheckBoxDaxInputAdjacent.setText("Adjacent");
+        jCheckBoxDaxInputAdjacent.setEnabled(false);
 
         jCheckBoxDaxInputVolumen.setText("Volumen");
+        jCheckBoxDaxInputVolumen.setEnabled(false);
 
         jLabel1.setText("Input number");
 
@@ -384,22 +415,28 @@ public class View extends javax.swing.JFrame {
         jCheckBoxDaxOutputLow.setText("Low");
 
         jCheckBoxDaxOutputClose.setText("Close");
+        jCheckBoxDaxOutputClose.setEnabled(false);
 
         jCheckBoxDaxOutputAdjacent.setText("Adjacent");
+        jCheckBoxDaxOutputAdjacent.setEnabled(false);
 
         jCheckBoxDaxOutputVolumen.setText("Volumen");
+        jCheckBoxDaxOutputVolumen.setEnabled(false);
 
         jCheckBoxCrudeOilOutputLow.setText("Low");
 
         jLabel6.setText("Input number");
 
         jCheckBoxCrudeOilOutputClose.setText("Close");
+        jCheckBoxCrudeOilOutputClose.setEnabled(false);
 
         jLabel7.setText("Output number");
 
         jCheckBoxCrudeOilOutputAdjacent.setText("Adjacent");
+        jCheckBoxCrudeOilOutputAdjacent.setEnabled(false);
 
         jCheckBoxCrudeOilOutputVolumen.setText("Volumen");
+        jCheckBoxCrudeOilOutputVolumen.setEnabled(false);
 
         jLabel8.setText("Input");
 
@@ -422,8 +459,10 @@ public class View extends javax.swing.JFrame {
         jCheckBoxCrudeOilInputLow.setText("Low");
 
         jCheckBoxCrudeOilInputClose.setText("Close");
+        jCheckBoxCrudeOilInputClose.setEnabled(false);
 
         jCheckBoxCrudeOilInputAdjacent.setText("Adjacent");
+        jCheckBoxCrudeOilInputAdjacent.setEnabled(false);
 
         jCheckBoxCrudeOilOutputOpen.setText("Open");
         jCheckBoxCrudeOilOutputOpen.addActionListener(new java.awt.event.ActionListener() {
@@ -433,6 +472,7 @@ public class View extends javax.swing.JFrame {
         });
 
         jCheckBoxCrudeOilInputVolumen.setText("Volumen");
+        jCheckBoxCrudeOilInputVolumen.setEnabled(false);
 
         jCheckBoxCrudeOilOutputHigh.setText("High");
         jCheckBoxCrudeOilOutputHigh.addActionListener(new java.awt.event.ActionListener() {
@@ -444,12 +484,16 @@ public class View extends javax.swing.JFrame {
         jCheckBoxGoldOutputLow.setText("Low");
 
         jCheckBoxGoldOutputClose.setText("Close");
+        jCheckBoxGoldOutputClose.setEnabled(false);
 
         jCheckBoxGoldOutputAdjacent.setText("Adjacent");
+        jCheckBoxGoldOutputAdjacent.setEnabled(false);
 
         jCheckBoxGoldOutputVolumen.setText("Volumen");
+        jCheckBoxGoldOutputVolumen.setEnabled(false);
 
         jCheckBoxGoldInputVolumen.setText("Volumen");
+        jCheckBoxGoldInputVolumen.setEnabled(false);
 
         jLabel10.setText("Input number");
 
@@ -476,8 +520,10 @@ public class View extends javax.swing.JFrame {
         jCheckBoxGoldInputLow.setText("Low");
 
         jCheckBoxGoldInputClose.setText("Close");
+        jCheckBoxGoldInputClose.setEnabled(false);
 
         jCheckBoxGoldInputAdjacent.setText("Adjacent");
+        jCheckBoxGoldInputAdjacent.setEnabled(false);
 
         jCheckBoxGoldOutputOpen.setText("Open");
         jCheckBoxGoldOutputOpen.addActionListener(new java.awt.event.ActionListener() {
@@ -592,6 +638,11 @@ public class View extends javax.swing.JFrame {
                 jButtonCreateNetworkMouseClicked(evt);
             }
         });
+        jButtonCreateNetwork.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCreateNetworkActionPerformed(evt);
+            }
+        });
 
         jButtonLearnNetwork.setText("Learn");
         jButtonLearnNetwork.setEnabled(false);
@@ -620,6 +671,33 @@ public class View extends javax.swing.JFrame {
 
         jLabelCreateNetwork.setForeground(new java.awt.Color(0, 0, 255));
         jLabelCreateNetwork.setText("Not created");
+
+        jButtonLoadNetwork.setText("Load network");
+
+        jButtonSaveNetwork.setText("Save network");
+
+        jTextFieldLoadNetworkFile.setText("File name");
+
+        jTextFieldSaveNetworkFile.setText("File name");
+
+        jLabelLoadNetwork.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelLoadNetwork.setText("Not loaded");
+
+        jLabelSaveNetwork.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelSaveNetwork.setText("Not saved");
+
+        jLabelLearnNetwork.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelLearnNetwork.setText("Not learned");
+
+        jTextFieldTestFileName.setText("File name");
+        jTextFieldTestFileName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldTestFileNameActionPerformed(evt);
+            }
+        });
+
+        jLabelTestNetwork.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelTestNetwork.setText("Not tested");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -666,12 +744,9 @@ public class View extends javax.swing.JFrame {
                                 .add(jLabelCreateDataSetCollection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                         .add(77, 77, 77)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(jLabel8)
-                                .add(60, 60, 60)
-                                .add(jLabel9))
+                            .add(jLabel8)
                             .add(jCheckBoxCrudeOil))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 228, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 279, Short.MAX_VALUE)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -728,7 +803,8 @@ public class View extends javax.swing.JFrame {
                                     .add(jCheckBoxCrudeOilOutputOpen)
                                     .add(jCheckBoxCrudeOilOutputHigh)
                                     .add(jCheckBoxCrudeOilOutputLow)
-                                    .add(jCheckBoxCrudeOilOutputVolumen)))
+                                    .add(jCheckBoxCrudeOilOutputVolumen)
+                                    .add(jLabel9)))
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
                                     .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel15, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -781,13 +857,26 @@ public class View extends javax.swing.JFrame {
                                 .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 81, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                         .add(41, 41, 41)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(jButtonCreateNetwork)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jLabelCreateNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jButtonLearnNetwork)
-                            .add(jButtonTestNetwork))
-                        .addContainerGap(114, Short.MAX_VALUE))))
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                .add(jButtonSaveNetwork, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(jButtonLoadNetwork, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(jButtonCreateNetwork, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                .add(jButtonLearnNetwork, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(jButtonTestNetwork, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jTextFieldLoadNetworkFile)
+                            .add(jTextFieldSaveNetworkFile)
+                            .add(jTextFieldTestFileName))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabelSaveNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabelLoadNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabelCreateNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabelLearnNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabelTestNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(27, 27, 27))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -851,11 +940,36 @@ public class View extends javax.swing.JFrame {
                             .add(jButtonCreateNetwork)
                             .add(jLabelCreateNetwork)))
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(layout.createSequentialGroup()
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createSequentialGroup()
+                                    .add(32, 32, 32)
+                                    .add(jCheckBoxGoldOutputOpen)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jCheckBoxGoldOutputHigh)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jCheckBoxGoldOutputLow)
+                                    .add(33, 33, 33))
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jLabel10)
+                                    .add(12, 12, 12)
+                                    .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                    .add(jLabel11)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                    .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(12, 12, 12)))
+                            .add(jLabel23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jComboBoxGoldInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(2, 2, 2)
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                 .add(jLabel8)
-                                .add(jLabel9))
-                            .add(11, 11, 11)
+                                .add(jLabel9)))
+                        .add(layout.createSequentialGroup()
+                            .add(10, 10, 10)
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                                 .add(layout.createSequentialGroup()
                                     .add(jCheckBoxCrudeOilInputOpen)
@@ -905,52 +1019,29 @@ public class View extends javax.swing.JFrame {
                                     .add(3, 3, 3)
                                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                         .add(jComboBoxCrudeOilInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(jCheckBoxCrudeOilOutputAdjacent)))))
-                        .add(layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel12)
-                                .add(jLabel13))
-                            .add(18, 18, 18)
-                            .add(jCheckBoxGoldInputOpen)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jCheckBoxGoldInputHigh)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jCheckBoxGoldInputLow)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jCheckBoxGoldInputClose)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                            .add(jCheckBoxGoldInputVolumen)
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jCheckBoxGoldInputAdjacent)
-                                .add(jCheckBoxGoldOutputAdjacent)))
-                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(jCheckBoxCrudeOilOutputAdjacent)))
                                 .add(layout.createSequentialGroup()
-                                    .add(32, 32, 32)
-                                    .add(jCheckBoxGoldOutputOpen)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel12)
+                                        .add(jLabel13))
+                                    .add(18, 18, 18)
+                                    .add(jCheckBoxGoldInputOpen)
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputHigh)
+                                    .add(jCheckBoxGoldInputHigh)
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputLow)
+                                    .add(jCheckBoxGoldInputLow)
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputClose)
-                                    .add(10, 10, 10))
-                                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jLabel10)
-                                    .add(12, 12, 12)
-                                    .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jCheckBoxGoldInputClose)
+                                        .add(jCheckBoxGoldOutputClose))
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                    .add(jLabel11)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jCheckBoxGoldInputVolumen)
+                                        .add(jCheckBoxGoldOutputVolumen))
                                     .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                    .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(12, 12, 12)))
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(jCheckBoxGoldOutputVolumen))
-                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                            .add(jComboBoxGoldInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jCheckBoxGoldInputAdjacent)
+                                        .add(jCheckBoxGoldOutputAdjacent)))))))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(18, 18, 18)
@@ -981,11 +1072,27 @@ public class View extends javax.swing.JFrame {
                             .add(jLabel21)
                             .add(jTextFieldLayers, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                     .add(layout.createSequentialGroup()
+                        .add(6, 6, 6)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jButtonLoadNetwork)
+                                .add(jTextFieldLoadNetworkFile, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jLabelLoadNetwork))
                         .add(18, 18, 18)
-                        .add(jButtonLearnNetwork)
-                        .add(18, 18, 18)
-                        .add(jButtonTestNetwork)))
-                .addContainerGap(131, Short.MAX_VALUE))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonLearnNetwork)
+                            .add(jLabelLearnNetwork))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonTestNetwork)
+                            .add(jTextFieldTestFileName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabelTestNetwork))))
+                .add(16, 16, 16)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jButtonSaveNetwork)
+                    .add(jTextFieldSaveNetworkFile, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabelSaveNetwork))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
 
         pack();
@@ -1080,11 +1187,7 @@ public class View extends javax.swing.JFrame {
                 System.out.println(dataSet);
             }
 
-            jButtonCreateNetwork.setEnabled(true);
-            jButtonPrepareLearningSet.setEnabled(true);
-            jButtonPrepareTestingSet.setEnabled(true);
-
-            jLabelCreateDataSetCollection.setText("Created");
+            setLabelsButtonsAfterDataSetCreation();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -1190,11 +1293,11 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonPrepareLearningSetActionPerformed
 
     private void jButtonTestNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonTestNetworkMouseClicked
-        
+
         result = new double[trainingData.testingSet.size()][trainingData.learningSet.getOutputSize()];
         System.out.println();
-        System.out.println("Result "+result.length);
-        System.out.println("Result[] "+result[0].length);
+        System.out.println("Result " + result.length);
+        System.out.println("Result[] " + result[0].length);
         DataSetRow dataRow;
         for (int i = 0; i < trainingData.testingSet.size(); i++) {
             dataRow = trainingData.testingSet.getRowAt(i);
@@ -1204,27 +1307,33 @@ public class View extends javax.swing.JFrame {
             network.calculate();
             result[i] = network.getOutput().clone();
 
-            
             System.out.print("Resul rows ");
             for (int j = 0; j < result[i].length; j++) {
-                System.out.print(result[i][j]+" ");
+                System.out.print(result[i][j] + " ");
             }
-            
 
         }
         System.out.println();
 
         dataSetCollection.backNormalizatfionInResult(result);
-        
+
         dataSetCollection.backNormalization();
-        
+
         int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
         try {
-            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount,trainingData.testingStartDate , result, "SaveView");
+            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, "SaveView");
         } catch (Exception ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButtonTestNetworkMouseClicked
+
+    private void jTextFieldTestFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTestFileNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTestFileNameActionPerformed
+
+    private void jButtonCreateNetworkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCreateNetworkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonCreateNetworkActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1266,8 +1375,10 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JButton jButtonCreateDataSetCollection;
     private javax.swing.JButton jButtonCreateNetwork;
     private javax.swing.JButton jButtonLearnNetwork;
+    private javax.swing.JButton jButtonLoadNetwork;
     private javax.swing.JButton jButtonPrepareLearningSet;
     private javax.swing.JButton jButtonPrepareTestingSet;
+    private javax.swing.JButton jButtonSaveNetwork;
     private javax.swing.JButton jButtonTestNetwork;
     private javax.swing.JCheckBox jCheckBoxCrudeOil;
     private javax.swing.JCheckBox jCheckBoxCrudeOilInputAdjacent;
@@ -1346,11 +1457,18 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelCreateDataSetCollection;
     private javax.swing.JLabel jLabelCreateNetwork;
+    private javax.swing.JLabel jLabelLearnNetwork;
+    private javax.swing.JLabel jLabelLoadNetwork;
     private javax.swing.JLabel jLabelPrepareLearningSet;
     private javax.swing.JLabel jLabelPrepareTestingSet;
+    private javax.swing.JLabel jLabelSaveNetwork;
+    private javax.swing.JLabel jLabelTestNetwork;
     private javax.swing.JTextField jTextFieldLayers;
     private javax.swing.JTextField jTextFieldLearningRate;
+    private javax.swing.JTextField jTextFieldLoadNetworkFile;
     private javax.swing.JTextField jTextFieldMaxError;
     private javax.swing.JTextField jTextFieldMaxIterations;
+    private javax.swing.JTextField jTextFieldSaveNetworkFile;
+    private javax.swing.JTextField jTextFieldTestFileName;
     // End of variables declaration//GEN-END:variables
 }

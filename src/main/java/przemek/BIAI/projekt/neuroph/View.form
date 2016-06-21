@@ -72,14 +72,10 @@
                       </Group>
                       <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                              <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jCheckBoxCrudeOil" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="228" max="32767" attributes="0"/>
+                      <EmptySpace pref="279" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -151,6 +147,7 @@
                                   <Component id="jCheckBoxCrudeOilOutputHigh" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxCrudeOilOutputLow" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="jCheckBoxCrudeOilOutputVolumen" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
@@ -221,15 +218,31 @@
                       </Group>
                       <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="jButtonCreateNetwork" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabelCreateNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="jButtonSaveNetwork" max="32767" attributes="0"/>
+                              <Component id="jButtonLoadNetwork" max="32767" attributes="0"/>
+                              <Component id="jButtonCreateNetwork" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jButtonLearnNetwork" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonTestNetwork" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="jButtonLearnNetwork" max="32767" attributes="0"/>
+                              <Component id="jButtonTestNetwork" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="114" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jTextFieldLoadNetworkFile" max="32767" attributes="0"/>
+                          <Component id="jTextFieldSaveNetworkFile" max="32767" attributes="0"/>
+                          <Component id="jTextFieldTestFileName" alignment="0" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabelSaveNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="jLabelLoadNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="jLabelCreateNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="jLabelLearnNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="jLabelTestNetwork" min="-2" pref="69" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -307,16 +320,46 @@
                           <Component id="jLabel20" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="jTextFieldMaxIterations" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonCreateNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabelCreateNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelCreateNetwork" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldOutputOpen" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldOutputHigh" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldOutputLow" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                                  <Component id="jComboBoxGoldInputNumber" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="jComboBoxGoldOutputNumber" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="jLabel23" min="-2" pref="23" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jComboBoxGoldInOutDistance" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jCheckBoxCrudeOilInputOpen" min="-2" max="-2" attributes="0"/>
@@ -378,60 +421,34 @@
                                       <Component id="jCheckBoxCrudeOilOutputAdjacent" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                          </Group>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                          <Component id="jCheckBoxGoldInputOpen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCheckBoxGoldInputHigh" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCheckBoxGoldInputLow" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCheckBoxGoldInputClose" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="jCheckBoxGoldInputVolumen" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jCheckBoxGoldInputAdjacent" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxGoldOutputAdjacent" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-                                  <Component id="jCheckBoxGoldOutputOpen" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jCheckBoxGoldOutputHigh" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jCheckBoxGoldOutputLow" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jCheckBoxGoldOutputClose" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              </Group>
                               <Group type="102" alignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldInputOpen" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                                  <Component id="jComboBoxGoldInputNumber" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldInputHigh" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="jCheckBoxGoldInputLow" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jCheckBoxGoldInputClose" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jCheckBoxGoldOutputClose" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jCheckBoxGoldInputVolumen" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jCheckBoxGoldOutputVolumen" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jComboBoxGoldOutputNumber" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="jCheckBoxGoldInputAdjacent" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jCheckBoxGoldOutputAdjacent" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                           </Group>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="jLabel23" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                              <Component id="jCheckBoxGoldOutputVolumen" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jComboBoxGoldInOutDistance" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -473,13 +490,34 @@
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                      <Component id="jButtonLearnNetwork" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jButtonLoadNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jTextFieldLoadNetworkFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jLabelLoadNetwork" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="jButtonTestNetwork" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonLearnNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelLearnNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jButtonTestNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jTextFieldTestFileName" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabelTestNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="131" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jButtonSaveNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jTextFieldSaveNetworkFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabelSaveNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="92" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -509,16 +547,19 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxInputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxInputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxInputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
@@ -570,16 +611,19 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxOutputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxOutputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxOutputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputLow">
@@ -595,6 +639,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
@@ -605,11 +650,13 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel8">
@@ -646,11 +693,13 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilInputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilInputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputOpen">
@@ -664,6 +713,7 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilInputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilOutputHigh">
@@ -682,21 +732,25 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldOutputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldOutputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldOutputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldInputVolumen">
       <Properties>
         <Property name="text" type="java.lang.String" value="Volumen"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
@@ -743,11 +797,13 @@
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldInputClose">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldInputAdjacent">
       <Properties>
         <Property name="text" type="java.lang.String" value="Adjacent"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldOutputOpen">
@@ -1030,6 +1086,7 @@
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButtonCreateNetworkMouseClicked"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonCreateNetworkActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButtonLearnNetwork">
@@ -1080,6 +1137,66 @@
           <Color blue="ff" green="0" red="0" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Not created"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonLoadNetwork">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Load network"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonSaveNetwork">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Save network"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTextFieldLoadNetworkFile">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="File name"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTextFieldSaveNetworkFile">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="File name"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelLoadNetwork">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Not loaded"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelSaveNetwork">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Not saved"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelLearnNetwork">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Not learned"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="jTextFieldTestFileName">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="File name"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldTestFileNameActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelTestNetwork">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" red="0" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Not tested"/>
       </Properties>
     </Component>
   </SubComponents>
