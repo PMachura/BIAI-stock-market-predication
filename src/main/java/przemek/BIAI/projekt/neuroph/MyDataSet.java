@@ -134,7 +134,7 @@ class MyDataSet {
     public void setInOutNumbers(int inNumber, Integer[] inValues, int outNumber, Integer[] outValues, int inOutDataDist) {
         try {
 
-            if (inNumber <= 0 || inValues == null || outNumber <= 0 || outValues == null || inOutDataDist < 0) {
+            if ((inNumber <= 0 && inValues == null) || (outNumber <= 0 && outValues == null) || inOutDataDist < 0) {
                 throw new Exception("[MyDataSet,setInOutNumbers] Bad parametrs");
             }
             dataInputNumber = inNumber;
