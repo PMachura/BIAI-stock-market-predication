@@ -27,11 +27,18 @@ public class TrainingData {
     DataSet learningSet;
     DataSet testingSet;
 
+    String learningStartDate;
+    String testingStartDate;
+
     public TrainingData() {
 
     }
 
-    public void prepareLearningSet(DataSetCollection dataSetCollection, int trainingElementAmount, int startingRow) {
+   
+
+    public void prepareLearningSet(DataSetCollection dataSetCollection, int trainingElementAmount, String startingDate) throws Exception {
+
+        learningStartDate = startingDate;
 
         // tu mozna wszedzie foreache zapakowac -.- ale ze mnie down
         int inputValuesDataNumber = 0;
@@ -45,79 +52,90 @@ public class TrainingData {
         learningSet = new DataSet(inputValuesDataNumber, outputValuesDataNumber);  //tutaj jest problem
 
         // ilosc zestawow treninowych tzn ilosc roznych zestawow wejsc dla sieci
-        try {
-            for (int i = 0; i < trainingElementAmount; i++) {
+        ArrayList<Integer> startingRow = new ArrayList<Integer>();
+        for (MyDataSet dataSet : dataSetCollection.dataSets) {
+            startingRow.add(dataSet.calculateStartingElement(learningStartDate));
+        }
 
-                ArrayList<Double> input = new ArrayList<Double>();
-                ArrayList<Double> output = new ArrayList<Double>();
+        for (int i = 0; i < trainingElementAmount; i++) {
 
-                for (MyDataSet dataSet : dataSetCollection.dataSets) { //to mozna przestawic wyzej zeby tu tego nie cisnac caly czas
+            ArrayList<Double> input = new ArrayList<Double>();
+            ArrayList<Double> output = new ArrayList<Double>();
 
-                    if (dataSet.maxDataPortionNumber < trainingElementAmount + startingRow) {
-                        throw new Exception("[TrainingData,prepareTrainingSet] , trainingElementAmount greater then DataSet.maxDataPortionNumber");
+            Integer dataSetIndicator = 0;
+            for (MyDataSet dataSet : dataSetCollection.dataSets) { //to mozna przestawic wyzej zeby tu tego nie cisnac caly czas
 
-                    } else {
-                        for (int k = 0; k < dataSet.dataInputNumber; k++) {
-                            for (int l = 0; l < dataSet.dataInputValuesNumber; l++) {
-                                input.add(dataSet.data.get(i + k + startingRow).values[dataSet.inValuesIndicator[l]]);
-                                //  System.out.println("iput[" + l + "] " + input.get(l));
-                            }
+                if (dataSet.maxDataPortionNumber < trainingElementAmount + startingRow.get(dataSetIndicator)) {
+                    throw new Exception("[TrainingData,prepareTrainingSet] , trainingElementAmount greater then DataSet.maxDataPortionNumber");
 
-                        }
-                        for (int k = 0; k < dataSet.dataOutputNumber; k++) {
-                            for (int l = 0; l < dataSet.dataOutputValuesNumber; l++) {
-                                output.add(dataSet.data.get(i + k + dataSet.dataInputNumber + dataSet.inOutDataDistance + startingRow).values[dataSet.outValuesIndicator[l]]);
-                            }
-
+                } else {
+                    for (int k = 0; k < dataSet.dataInputNumber; k++) {
+                        for (int l = 0; l < dataSet.dataInputValuesNumber; l++) {
+                            input.add(dataSet.data.get(i + k + startingRow.get(dataSetIndicator)).values[dataSet.inValuesIndicator[l]]);
+                            //  System.out.println("iput[" + l + "] " + input.get(l));
                         }
 
                     }
-                }
-                learningSet.addRow(new DataSetRow(input, output));
-                System.out.println("Input for teach  " + input);
-                System.out.println("Output for teach " + output);
+                    for (int k = 0; k < dataSet.dataOutputNumber; k++) {
+                        for (int l = 0; l < dataSet.dataOutputValuesNumber; l++) {
+                            output.add(dataSet.data.get(i + k + dataSet.dataInputNumber + dataSet.inOutDataDistance + startingRow.get(dataSetIndicator)).values[dataSet.outValuesIndicator[l]]);
+                        }
 
+                    }
+
+                }
+                dataSetIndicator++;
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            learningSet.addRow(new DataSetRow(input, output));
+            System.out.println("Input for teach  " + input);
+            System.out.println("Output for teach " + output);
+
         }
 
     }
 
-    public void prepareTestingSet(DataSetCollection dataSetCollection, int trainingElementAmount, int startingRow) {
+    public void prepareTestingSet(DataSetCollection dataSetCollection, int trainingElementAmount, String startingDate) throws Exception {
+
+        testingStartDate = startingDate;
         int inputDataNumber = 0;
+
         for (int i = 0; i < dataSetCollection.dataSets.size(); i++) {
             inputDataNumber += dataSetCollection.dataSets.get(i).dataInputValuesNumber * dataSetCollection.dataSets.get(i).dataInputNumber;
         }
         testingSet = new DataSet(inputDataNumber);
-        try {
-            for (int i = 0; i < trainingElementAmount; i++) {
 
-                ArrayList<Double> input = new ArrayList<Double>();
-                for (MyDataSet dataSet : dataSetCollection.dataSets) {
-                    if (dataSet.maxDataPortionNumber < (trainingElementAmount + startingRow)) {
-                        // EXCETPION !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        throw new Exception("[TrainingData,prepareTestingSet] , trainingElementAmount greater then DataSet.maxDataPortionNumber");
-
-                    } else {
-                        for (int k = 0; k < dataSet.dataInputNumber; k++) {
-                            for (int l = 0; l < dataSet.dataInputValuesNumber; l++) {
-                                input.add(dataSet.data.get(i + k + startingRow).values[dataSet.inValuesIndicator[l]]);
-                                //  System.out.println("iput[" + l + "] " + input.get(l));
-                            }
-
-                        }
-                    }
-
-                }
-                System.out.println("Input for test" + input);
-                testingSet.addRow(new DataSetRow(input));
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+        ArrayList<Integer> startingRow = new ArrayList<Integer>();
+        for (MyDataSet dataSet : dataSetCollection.dataSets) {
+            startingRow.add(dataSet.calculateStartingElement(testingStartDate));
         }
+
+        for (int i = 0; i < trainingElementAmount; i++) {
+
+            ArrayList<Double> input = new ArrayList<Double>();
+            Integer dataSetIndicator = 0;
+            for (MyDataSet dataSet : dataSetCollection.dataSets) {
+                if (dataSet.maxDataPortionNumber < (trainingElementAmount + startingRow.get(dataSetIndicator))-1) {
+                    System.out.println("Max data portion: " + dataSet.maxDataPortionNumber);
+                    System.out.println("Starting row: " + startingRow.get(dataSetIndicator));
+                    System.out.println("Training element amount: " + trainingElementAmount);
+                    throw new Exception("[TrainingData,prepareTestingSet] , trainingElementAmount greater then DataSet.maxDataPortionNumber");
+
+                } else {
+                    for (int k = 0; k < dataSet.dataInputNumber; k++) {
+                        for (int l = 0; l < dataSet.dataInputValuesNumber; l++) {
+                            input.add(dataSet.data.get(i + k + startingRow.get(dataSetIndicator)).values[dataSet.inValuesIndicator[l]]);
+                            //  System.out.println("iput[" + l + "] " + input.get(l));
+                        }
+
+                    }
+                }
+                dataSetIndicator++;
+
+            }
+            System.out.println("Input for test" + input);
+            testingSet.addRow(new DataSetRow(input));
+        }
+
     }
 
 }

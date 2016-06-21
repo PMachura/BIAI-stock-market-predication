@@ -6,6 +6,12 @@
 package przemek.BIAI.projekt.neuroph;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.neuroph.core.data.DataSetRow;
+import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.util.TransferFunctionType;
 
 /**
  *
@@ -18,16 +24,30 @@ public class View extends javax.swing.JFrame {
     MyDataSet dax = new MyDataSet();
     MyDataSet oil = new MyDataSet();
     MyDataSet gold = new MyDataSet();
+    TrainingData trainingData = new TrainingData();
+    MultiLayerPerceptron network;
+    double[][] result;
+
+    ArrayList<Complex> complexGroup = new ArrayList<Complex>();
 
     /**
      * Creates new form View
      */
     public View() {
+
         initComponents();
-        dataFileHandler.loadData("DAX300.txt", dax);
-        dataFileHandler.loadData("CrudeOil300.txt", oil);
-        dataFileHandler.loadData("Gold300.txt", gold);
-        
+        try {
+            dataFileHandler.loadData("testSet.txt", dax);
+            dataFileHandler.loadData("testSet.txt", oil);
+            dataFileHandler.loadData("testSet.txt", gold);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        Collections.reverse(dax.data);
+        Collections.reverse(oil.data);
+        Collections.reverse(gold.data);
+
         for (Integer i = 0; i < 100; i++) {
             jComboBoxCrudeOilInputNumber.addItem(i.toString());
             jComboBoxDaxInputNumber.addItem(i.toString());
@@ -37,12 +57,48 @@ public class View extends javax.swing.JFrame {
             jComboBoxDaxOutputNumber.addItem(i.toString());
             jComboBoxGoldOutputNumber.addItem(i.toString());
 
+            jComboBoxDaxInOutDistance.addItem(i.toString());
+            jComboBoxCrudeOilInOutDistance.addItem(i.toString());
+            jComboBoxGoldInOutDistance.addItem(i.toString());
+
+            jComboBoxLearningElementsAmount.addItem(i.toString());
+            jComboBoxTestingElementsAmount.addItem(i.toString());
+
         }
+
+        ArrayList<String> daxDate = new ArrayList<String>(0);
+        for (SingleData sd : dax.data) {
+            daxDate.add(sd.date);
+        }
+
+        ArrayList<String> goldDate = new ArrayList<String>(0);
+        for (SingleData sd : gold.data) {
+            goldDate.add(sd.date);
+        }
+
+        ArrayList<String> oilDate = new ArrayList<String>(0);
+        for (SingleData sd : oil.data) {
+            oilDate.add(sd.date);
+        }
+
+        ArrayList<String> avaliableDate = new ArrayList<String>();
+
+        for (String s : daxDate) {
+            if (goldDate.contains(s) && oilDate.contains(s)) {
+                avaliableDate.add(s);
+            }
+        }
+
+        for (String s : avaliableDate) {
+            jComboBoxLearningStartElement.addItem(s);
+            jComboBoxTestingStartElement.addItem(s);
+        }
+
     }
 
-    private ArrayList<Integer> getDaxInputValuesIndicator() {
+    private Integer[] getDaxInputValuesIndicator() {
         ArrayList<Integer> inputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] inputIndicators;
         if (jCheckBoxDaxInputOpen.isSelected()) {
             inputValuesIndicator.add(0);
         }
@@ -56,12 +112,16 @@ public class View extends javax.swing.JFrame {
             inputValuesIndicator.add(3);
         }
 
-        return inputValuesIndicator;
+        inputIndicators = new Integer[inputValuesIndicator.size()];
+        for (int i = 0; i < inputIndicators.length; i++) {
+            inputIndicators[i] = inputValuesIndicator.get(i);
+        }
+        return inputIndicators;
     }
 
-    private ArrayList<Integer> getOilInputValuesIndicator() {
+    private Integer[] getOilInputValuesIndicator() {
         ArrayList<Integer> inputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] inputIndicators;
         if (jCheckBoxCrudeOilInputOpen.isSelected()) {
             inputValuesIndicator.add(0);
         }
@@ -75,12 +135,16 @@ public class View extends javax.swing.JFrame {
             inputValuesIndicator.add(3);
         }
 
-        return inputValuesIndicator;
+        inputIndicators = new Integer[inputValuesIndicator.size()];
+        for (int i = 0; i < inputIndicators.length; i++) {
+            inputIndicators[i] = inputValuesIndicator.get(i);
+        }
+        return inputIndicators;
     }
 
-    private ArrayList<Integer> getGoldInputValuesIndicator() {
+    private Integer[] getGoldInputValuesIndicator() {
         ArrayList<Integer> inputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] inputIndicators;
         if (jCheckBoxGoldInputOpen.isSelected()) {
             inputValuesIndicator.add(0);
         }
@@ -94,12 +158,16 @@ public class View extends javax.swing.JFrame {
             inputValuesIndicator.add(3);
         }
 
-        return inputValuesIndicator;
+        inputIndicators = new Integer[inputValuesIndicator.size()];
+        for (int i = 0; i < inputIndicators.length; i++) {
+            inputIndicators[i] = inputValuesIndicator.get(i);
+        }
+        return inputIndicators;
     }
 
-    private ArrayList<Integer> getDaxOutputValuesIndicator() {
+    private Integer[] getDaxOutputValuesIndicator() {
         ArrayList<Integer> outputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] outputIndicators;
         if (jCheckBoxDaxOutputOpen.isSelected()) {
             outputValuesIndicator.add(0);
         }
@@ -113,12 +181,16 @@ public class View extends javax.swing.JFrame {
             outputValuesIndicator.add(3);
         }
 
-        return outputValuesIndicator;
+        outputIndicators = new Integer[outputValuesIndicator.size()];
+        for (int i = 0; i < outputIndicators.length; i++) {
+            outputIndicators[i] = outputValuesIndicator.get(i);
+        }
+        return outputIndicators;
     }
 
-    private ArrayList<Integer> getOilOutputValuesIndicator() {
+    private Integer[] getOilOutputValuesIndicator() {
         ArrayList<Integer> outputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] outputIndicators;
         if (jCheckBoxCrudeOilOutputOpen.isSelected()) {
             outputValuesIndicator.add(0);
         }
@@ -132,12 +204,16 @@ public class View extends javax.swing.JFrame {
             outputValuesIndicator.add(3);
         }
 
-        return outputValuesIndicator;
+        outputIndicators = new Integer[outputValuesIndicator.size()];
+        for (int i = 0; i < outputIndicators.length; i++) {
+            outputIndicators[i] = outputValuesIndicator.get(i);
+        }
+        return outputIndicators;
     }
 
-    private ArrayList<Integer> getGoldOutputValuesIndicator() {
+    private Integer[] getGoldOutputValuesIndicator() {
         ArrayList<Integer> outputValuesIndicator = new ArrayList<Integer>(0);
-
+        Integer[] outputIndicators;
         if (jCheckBoxGoldOutputOpen.isSelected()) {
             outputValuesIndicator.add(0);
         }
@@ -151,7 +227,11 @@ public class View extends javax.swing.JFrame {
             outputValuesIndicator.add(3);
         }
 
-        return outputValuesIndicator;
+        outputIndicators = new Integer[outputValuesIndicator.size()];
+        for (int i = 0; i < outputIndicators.length; i++) {
+            outputIndicators[i] = outputValuesIndicator.get(i);
+        }
+        return outputIndicators;
     }
 
     /**
@@ -163,7 +243,6 @@ public class View extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonGroup1 = new javax.swing.ButtonGroup();
         jCheckBoxDaxInputOpen = new javax.swing.JCheckBox();
         jCheckBoxDaxInputHigh = new javax.swing.JCheckBox();
         jCheckBoxDaxInputLow = new javax.swing.JCheckBox();
@@ -217,17 +296,12 @@ public class View extends javax.swing.JFrame {
         jCheckBoxDax = new javax.swing.JCheckBox();
         jCheckBoxCrudeOil = new javax.swing.JCheckBox();
         jCheckBoxGold = new javax.swing.JCheckBox();
-        jTextFieldInOutDistance = new javax.swing.JTextField();
         jButtonPrepareLearningSet = new javax.swing.JButton();
         jButtonPrepareTestingSet = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jTextFieldLearningStartingElement = new javax.swing.JTextField();
-        jTextFieldTestingStartingElement = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jTextFieldLearningElementAmount = new javax.swing.JTextField();
-        jTextFieldTestingElementAmount = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
@@ -242,7 +316,22 @@ public class View extends javax.swing.JFrame {
         jComboBoxCrudeOilInputNumber = new javax.swing.JComboBox<>();
         jComboBoxGoldOutputNumber = new javax.swing.JComboBox<>();
         jComboBoxGoldInputNumber = new javax.swing.JComboBox<>();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        jComboBoxDaxInOutDistance = new javax.swing.JComboBox<>();
+        jComboBoxCrudeOilInOutDistance = new javax.swing.JComboBox<>();
+        jLabel22 = new javax.swing.JLabel();
+        jComboBoxGoldInOutDistance = new javax.swing.JComboBox<>();
+        jLabel23 = new javax.swing.JLabel();
+        jComboBoxTestingStartElement = new javax.swing.JComboBox<>();
+        jComboBoxLearningElementsAmount = new javax.swing.JComboBox<>();
+        jComboBoxTestingElementsAmount = new javax.swing.JComboBox<>();
+        jComboBoxLearningStartElement = new javax.swing.JComboBox<>();
+        jButtonCreateNetwork = new javax.swing.JButton();
+        jButtonLearnNetwork = new javax.swing.JButton();
+        jButtonTestNetwork = new javax.swing.JButton();
+        jLabelCreateDataSetCollection = new javax.swing.JLabel();
+        jLabelPrepareLearningSet = new javax.swing.JLabel();
+        jLabelPrepareTestingSet = new javax.swing.JLabel();
+        jLabelCreateNetwork = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -272,7 +361,7 @@ public class View extends javax.swing.JFrame {
 
         jLabel2.setText("Output number");
 
-        jLabel3.setText("Input output distance");
+        jLabel3.setText("In out distance");
 
         jLabel4.setText("Input");
 
@@ -417,42 +506,34 @@ public class View extends javax.swing.JFrame {
 
         jCheckBoxGold.setText("Gold");
 
-        jTextFieldInOutDistance.setText("In Out distance");
-
         jButtonPrepareLearningSet.setText("Prepare learning set");
+        jButtonPrepareLearningSet.setEnabled(false);
+        jButtonPrepareLearningSet.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonPrepareLearningSetMouseClicked(evt);
+            }
+        });
+        jButtonPrepareLearningSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrepareLearningSetActionPerformed(evt);
+            }
+        });
 
         jButtonPrepareTestingSet.setText("Prepare testing set");
+        jButtonPrepareTestingSet.setEnabled(false);
+        jButtonPrepareTestingSet.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonPrepareTestingSetMouseClicked(evt);
+            }
+        });
 
         jLabel14.setText("Learning starting element ");
 
         jLabel15.setText("Testing starting element");
 
-        jTextFieldLearningStartingElement.setText("Learning start");
-        jTextFieldLearningStartingElement.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldLearningStartingElementActionPerformed(evt);
-            }
-        });
-
-        jTextFieldTestingStartingElement.setText("Testing start");
-
         jLabel16.setText("Learning elements amount");
 
         jLabel17.setText("Testing elements amount");
-
-        jTextFieldLearningElementAmount.setText("learnign elements");
-        jTextFieldLearningElementAmount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldLearningElementAmountActionPerformed(evt);
-            }
-        });
-
-        jTextFieldTestingElementAmount.setText("testing elements");
-        jTextFieldTestingElementAmount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldTestingElementAmountActionPerformed(evt);
-            }
-        });
 
         jLabel18.setText("Learning rate");
 
@@ -462,11 +543,11 @@ public class View extends javax.swing.JFrame {
 
         jLabel21.setText("Layers");
 
-        jTextFieldMaxIterations.setText("Iterations");
+        jTextFieldMaxIterations.setText("10000");
 
-        jTextFieldLearningRate.setText("Learning rate");
+        jTextFieldLearningRate.setText("0.1");
 
-        jTextFieldMaxError.setText("Max error");
+        jTextFieldMaxError.setText("0.001");
 
         jTextFieldLayers.setText("Layers");
 
@@ -476,7 +557,69 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        jRadioButton1.setText("jRadioButton1");
+        jLabel22.setText("In out distance");
+
+        jLabel23.setText("In out distance");
+
+        jComboBoxTestingStartElement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTestingStartElementActionPerformed(evt);
+            }
+        });
+
+        jComboBoxLearningElementsAmount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxLearningElementsAmountActionPerformed(evt);
+            }
+        });
+
+        jComboBoxTestingElementsAmount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTestingElementsAmountActionPerformed(evt);
+            }
+        });
+
+        jComboBoxLearningStartElement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxLearningStartElementActionPerformed(evt);
+            }
+        });
+
+        jButtonCreateNetwork.setText("Create netowrk");
+        jButtonCreateNetwork.setEnabled(false);
+        jButtonCreateNetwork.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonCreateNetworkMouseClicked(evt);
+            }
+        });
+
+        jButtonLearnNetwork.setText("Learn");
+        jButtonLearnNetwork.setEnabled(false);
+        jButtonLearnNetwork.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonLearnNetworkMouseClicked(evt);
+            }
+        });
+
+        jButtonTestNetwork.setText("Test");
+        jButtonTestNetwork.setEnabled(false);
+        jButtonTestNetwork.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonTestNetworkMouseClicked(evt);
+            }
+        });
+
+        jLabelCreateDataSetCollection.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelCreateDataSetCollection.setText("Not created");
+
+        jLabelPrepareLearningSet.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelPrepareLearningSet.setText("Not created");
+
+        jLabelPrepareTestingSet.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelPrepareTestingSet.setText("Not created");
+
+        jLabelCreateNetwork.setForeground(new java.awt.Color(0, 0, 255));
+        jLabelCreateNetwork.setText("Not created");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -491,6 +634,7 @@ public class View extends javax.swing.JFrame {
                                 .add(jLabel4)
                                 .add(60, 60, 60)
                                 .add(jLabel5))
+                            .add(jCheckBoxDax)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(jCheckBoxDaxInputClose)
@@ -513,253 +657,155 @@ public class View extends javax.swing.JFrame {
                                     .add(jLabel2)
                                     .add(jLabel1)
                                     .add(jComboBoxDaxInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jComboBoxDaxOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                            .add(jCheckBoxDax))
-                        .add(85, 85, 85)
+                                    .add(jComboBoxDaxOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 81, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(jComboBoxDaxInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                            .add(layout.createSequentialGroup()
+                                .add(jButtonCreateDataSetCollection)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(jLabelCreateDataSetCollection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(77, 77, 77)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(jLabel8)
+                                .add(60, 60, 60)
+                                .add(jLabel9))
+                            .add(jCheckBoxCrudeOil))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 228, Short.MAX_VALUE)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(jLabel8)
-                                        .add(60, 60, 60)
-                                        .add(jLabel9))
-                                    .add(jCheckBoxCrudeOil))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 228, Short.MAX_VALUE)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                    .add(jCheckBoxGoldInputClose)
-                                                    .add(jCheckBoxGoldInputVolumen)
-                                                    .add(jCheckBoxGoldInputOpen)
-                                                    .add(jCheckBoxGoldInputHigh)
-                                                    .add(jCheckBoxGoldInputLow))
-                                                .add(22, 22, 22))
-                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                                .add(jCheckBoxGoldInputAdjacent)
-                                                .add(18, 18, 18))
-                                            .add(layout.createSequentialGroup()
-                                                .add(jLabel12)
-                                                .add(61, 61, 61)))
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(layout.createSequentialGroup()
-                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                    .add(jCheckBoxGoldOutputClose)
-                                                    .add(jCheckBoxGoldOutputAdjacent)
-                                                    .add(jCheckBoxGoldOutputVolumen)
-                                                    .add(jCheckBoxGoldOutputOpen)
-                                                    .add(jCheckBoxGoldOutputHigh)
-                                                    .add(jCheckBoxGoldOutputLow))
-                                                .add(34, 34, 34)
-                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                    .add(jLabel11)
-                                                    .add(jLabel10)
-                                                    .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                                    .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                                            .add(jLabel13)))
-                                    .add(jCheckBoxGold))
-                                .add(66, 66, 66))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(jCheckBoxCrudeOilInputClose)
-                                            .add(jCheckBoxCrudeOilInputVolumen)
-                                            .add(jCheckBoxCrudeOilInputOpen)
-                                            .add(jCheckBoxCrudeOilInputHigh)
-                                            .add(jCheckBoxCrudeOilInputLow))
+                                            .add(jCheckBoxGoldInputClose)
+                                            .add(jCheckBoxGoldInputVolumen)
+                                            .add(jCheckBoxGoldInputOpen)
+                                            .add(jCheckBoxGoldInputHigh)
+                                            .add(jCheckBoxGoldInputLow))
                                         .add(22, 22, 22))
                                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                        .add(jCheckBoxCrudeOilInputAdjacent)
-                                        .add(18, 18, 18)))
+                                        .add(jCheckBoxGoldInputAdjacent)
+                                        .add(18, 18, 18))
+                                    .add(layout.createSequentialGroup()
+                                        .add(jLabel12)
+                                        .add(61, 61, 61)))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jLabel13)
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(jCheckBoxGoldOutputAdjacent)
+                                            .add(jCheckBoxGoldOutputClose)
+                                            .add(jCheckBoxGoldOutputVolumen)
+                                            .add(jCheckBoxGoldOutputOpen)
+                                            .add(jCheckBoxGoldOutputHigh)
+                                            .add(jCheckBoxGoldOutputLow))
+                                        .add(34, 34, 34)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(jLabel11)
+                                            .add(jLabel10)
+                                            .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(jLabel23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 81, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(jComboBoxGoldInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                            .add(jCheckBoxGold))
+                        .add(58, 58, 58))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(348, 348, 348)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(jCheckBoxCrudeOilInputVolumen)
+                                        .add(22, 22, 22))
+                                    .add(jCheckBoxCrudeOilInputClose)
+                                    .add(jCheckBoxCrudeOilInputOpen)
+                                    .add(jCheckBoxCrudeOilInputHigh)
+                                    .add(jCheckBoxCrudeOilInputLow)
+                                    .add(jCheckBoxCrudeOilInputAdjacent))
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(jCheckBoxCrudeOilOutputClose)
                                     .add(jCheckBoxCrudeOilOutputAdjacent)
                                     .add(jCheckBoxCrudeOilOutputOpen)
                                     .add(jCheckBoxCrudeOilOutputHigh)
                                     .add(jCheckBoxCrudeOilOutputLow)
-                                    .add(jCheckBoxCrudeOilOutputVolumen))
-                                .add(34, 34, 34)
+                                    .add(jCheckBoxCrudeOilOutputVolumen)))
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel15, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel14))
+                                .add(4, 4, 4)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                    .add(jComboBoxLearningStartElement, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .add(jComboBoxTestingStartElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 86, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(18, 18, 18)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel7)
-                                    .add(jLabel6)
-                                    .add(jComboBoxCrudeOilOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jComboBoxCrudeOilInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(20, 20, 20))))
-                    .add(layout.createSequentialGroup()
+                                    .add(jLabel16)
+                                    .add(jLabel17))
+                                .add(4, 4, 4)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(jComboBoxLearningElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(jComboBoxTestingElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                            .add(layout.createSequentialGroup()
+                                .add(jButtonPrepareLearningSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 155, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(18, 18, 18)
+                                .add(jLabelPrepareLearningSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(layout.createSequentialGroup()
+                                .add(jButtonPrepareTestingSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 155, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(18, 18, 18)
+                                .add(jLabelPrepareTestingSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel7)
+                            .add(jLabel6)
+                            .add(jComboBoxCrudeOilOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jComboBoxCrudeOilInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 81, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jComboBoxCrudeOilInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 33, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jButtonCreateDataSetCollection)
-                                    .add(layout.createSequentialGroup()
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                                .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel15, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel14, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                            .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(18, 18, 18)
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                            .add(jTextFieldInOutDistance)
-                                            .add(jTextFieldLearningStartingElement)
-                                            .add(jTextFieldTestingStartingElement))))
-                                .add(51, 51, 51)
+                                            .add(jLabel19)
+                                            .add(jLabel21, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 47, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                        .add(35, 35, 35))
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(jLabel18)
+                                        .add(22, 22, 22)))
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(layout.createSequentialGroup()
-                                        .add(jLabel17)
-                                        .add(10, 10, 10)
-                                        .add(jTextFieldTestingElementAmount))
-                                    .add(layout.createSequentialGroup()
-                                        .add(jLabel16)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jTextFieldLearningElementAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                                .add(47, 47, 47)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                                    .add(jLabel19)
-                                                    .add(jLabel21, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 47, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                                .add(35, 35, 35))
-                                            .add(layout.createSequentialGroup()
-                                                .add(jLabel18)
-                                                .add(22, 22, 22)))
-                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                            .add(jTextFieldLearningRate)
-                                            .add(jTextFieldMaxError)
-                                            .add(jTextFieldLayers)))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                        .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 71, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                            .add(jButtonPrepareLearningSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 155, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jButtonPrepareTestingSet, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 155, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(316, Short.MAX_VALUE))))
-            .add(layout.createSequentialGroup()
-                .add(268, 268, 268)
-                .add(jRadioButton1)
-                .add(0, 0, Short.MAX_VALUE))
+                                    .add(jTextFieldLearningRate, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                                    .add(jTextFieldMaxError)
+                                    .add(jTextFieldLayers)))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 81, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(41, 41, 41)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(jButtonCreateNetwork)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabelCreateNetwork, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jButtonLearnNetwork)
+                            .add(jButtonTestNetwork))
+                        .addContainerGap(114, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jRadioButton1)
-                .add(25, 25, 25)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jCheckBoxDax)
-                    .add(jCheckBoxCrudeOil)
-                    .add(jCheckBoxGold))
-                .add(18, 18, 18)
+                .add(48, 48, 48)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                        .add(layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel8)
-                                .add(jLabel9))
-                            .add(18, 18, 18)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                        .add(jCheckBoxCrudeOilInputOpen)
-                                        .add(jLabel6))
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(layout.createSequentialGroup()
-                                            .add(jComboBoxCrudeOilInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .add(14, 14, 14)
-                                            .add(jLabel7)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(jComboBoxCrudeOilOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(layout.createSequentialGroup()
-                                            .add(jCheckBoxCrudeOilInputHigh)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(jCheckBoxCrudeOilInputLow)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(jCheckBoxCrudeOilInputClose)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                                .add(jCheckBoxCrudeOilInputVolumen)
-                                                .add(jCheckBoxCrudeOilOutputVolumen)))))
-                                .add(layout.createSequentialGroup()
-                                    .add(jCheckBoxCrudeOilOutputOpen)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxCrudeOilOutputHigh)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxCrudeOilOutputLow)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxCrudeOilOutputClose)
-                                    .add(29, 29, 29)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                        .add(jCheckBoxCrudeOilOutputAdjacent)
-                                        .add(jCheckBoxCrudeOilInputAdjacent)))))
-                        .add(layout.createSequentialGroup()
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(jLabel12)
-                                .add(jLabel13))
-                            .add(18, 18, 18)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(layout.createSequentialGroup()
-                                    .add(jCheckBoxGoldOutputOpen)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputHigh)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputLow)
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(jCheckBoxGoldOutputClose)
-                                    .add(29, 29, 29)
-                                    .add(jCheckBoxGoldOutputAdjacent))
-                                .add(layout.createSequentialGroup()
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                        .add(jCheckBoxGoldInputOpen)
-                                        .add(jLabel10))
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                        .add(layout.createSequentialGroup()
-                                            .add(7, 7, 7)
-                                            .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                            .add(jLabel11)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                            .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                        .add(layout.createSequentialGroup()
-                                            .add(jCheckBoxGoldInputHigh)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(jCheckBoxGoldInputLow)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                            .add(jCheckBoxGoldInputClose)
-                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                                .add(jCheckBoxGoldInputVolumen)
-                                                .add(jCheckBoxGoldOutputVolumen))))
-                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                    .add(jCheckBoxGoldInputAdjacent)))))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jCheckBoxGold)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jCheckBoxDax)
+                        .add(jCheckBoxCrudeOil)))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel4)
-                            .add(jLabel5))
-                        .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jCheckBoxDaxInputOpen)
-                                    .add(jLabel1))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(layout.createSequentialGroup()
-                                        .add(jCheckBoxDaxInputHigh)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jCheckBoxDaxInputLow)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(jCheckBoxDaxInputClose))
-                                    .add(layout.createSequentialGroup()
-                                        .add(7, 7, 7)
-                                        .add(jComboBoxDaxInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(jLabel2)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(jComboBoxDaxOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                            .add(layout.createSequentialGroup()
+                                    .add(jLabel4)
+                                    .add(jLabel5))
+                                .add(18, 18, 18)
                                 .add(jCheckBoxDaxOutputOpen)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jCheckBoxDaxOutputHigh)
@@ -774,55 +820,172 @@ public class View extends javax.swing.JFrame {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                                     .add(jCheckBoxDaxInputAdjacent)
-                                    .add(jCheckBoxDaxOutputAdjacent))))))
+                                    .add(jCheckBoxDaxOutputAdjacent)))
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(32, 32, 32)
+                                        .add(jCheckBoxDaxInputOpen))
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                        .add(jLabel1)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(jComboBoxDaxInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jCheckBoxDaxInputHigh)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jCheckBoxDaxInputLow)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jCheckBoxDaxInputClose)))
+                        .add(8, 8, 8)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonCreateDataSetCollection)
+                            .add(jLabelCreateDataSetCollection))
+                        .add(44, 44, 44)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel14)
+                            .add(jComboBoxLearningElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel16)
+                            .add(jComboBoxLearningStartElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jButtonCreateNetwork)
+                            .add(jLabelCreateNetwork)))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                        .add(layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jLabel8)
+                                .add(jLabel9))
+                            .add(11, 11, 11)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(layout.createSequentialGroup()
+                                    .add(jCheckBoxCrudeOilInputOpen)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                        .add(jLabel2)
+                                        .add(jCheckBoxCrudeOilInputHigh))
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jCheckBoxCrudeOilInputLow)
+                                        .add(jComboBoxDaxOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(layout.createSequentialGroup()
+                                            .add(jCheckBoxCrudeOilInputClose)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                            .add(jCheckBoxCrudeOilInputVolumen))
+                                        .add(layout.createSequentialGroup()
+                                            .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jComboBoxDaxInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                    .add(jCheckBoxCrudeOilInputAdjacent))
+                                .add(layout.createSequentialGroup()
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(layout.createSequentialGroup()
+                                            .add(17, 17, 17)
+                                            .add(jCheckBoxCrudeOilOutputOpen)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jCheckBoxCrudeOilOutputHigh)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jCheckBoxCrudeOilOutputLow)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jCheckBoxCrudeOilOutputClose)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                            .add(jCheckBoxCrudeOilOutputVolumen))
+                                        .add(layout.createSequentialGroup()
+                                            .add(jLabel6)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jComboBoxCrudeOilInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(14, 14, 14)
+                                            .add(jLabel7)
+                                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                            .add(jComboBoxCrudeOilOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(18, 18, 18)
+                                            .add(jLabel22, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                    .add(3, 3, 3)
+                                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(jComboBoxCrudeOilInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(jCheckBoxCrudeOilOutputAdjacent)))))
+                        .add(layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jLabel12)
+                                .add(jLabel13))
+                            .add(18, 18, 18)
+                            .add(jCheckBoxGoldInputOpen)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jCheckBoxGoldInputHigh)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jCheckBoxGoldInputLow)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jCheckBoxGoldInputClose)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                            .add(jCheckBoxGoldInputVolumen)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jCheckBoxGoldInputAdjacent)
+                                .add(jCheckBoxGoldOutputAdjacent)))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(layout.createSequentialGroup()
+                                    .add(32, 32, 32)
+                                    .add(jCheckBoxGoldOutputOpen)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jCheckBoxGoldOutputHigh)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jCheckBoxGoldOutputLow)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jCheckBoxGoldOutputClose)
+                                    .add(10, 10, 10))
+                                .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                    .add(jLabel10)
+                                    .add(12, 12, 12)
+                                    .add(jComboBoxGoldInputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                    .add(jLabel11)
+                                    .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                    .add(jComboBoxGoldOutputNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(12, 12, 12)))
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jLabel23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jCheckBoxGoldOutputVolumen))
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jComboBoxGoldInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(27, 27, 27)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jTextFieldInOutDistance, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel14)
-                                    .add(jTextFieldLearningStartingElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel15)
-                                    .add(jTextFieldTestingStartingElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(32, 32, 32)
-                                .add(jButtonCreateDataSetCollection))
-                            .add(layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel18)
-                                    .add(jTextFieldLearningRate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel19)
-                                    .add(jTextFieldMaxError, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                .add(18, 18, 18)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                    .add(jLabel21)
-                                    .add(jTextFieldLayers, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                    .add(layout.createSequentialGroup()
-                        .add(61, 61, 61)
+                        .add(18, 18, 18)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel16)
-                            .add(jTextFieldLearningElementAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jLabel15)
+                            .add(jComboBoxTestingStartElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel17)
+                            .add(jComboBoxTestingElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(18, 18, 18)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jButtonPrepareLearningSet)
+                            .add(jLabelPrepareLearningSet))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel17)
-                            .add(jTextFieldTestingElementAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jButtonPrepareLearningSet)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jButtonPrepareTestingSet)
-                .addContainerGap(94, Short.MAX_VALUE))
+                            .add(jButtonPrepareTestingSet)
+                            .add(jLabelPrepareTestingSet)))
+                    .add(layout.createSequentialGroup()
+                        .add(9, 9, 9)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel18)
+                            .add(jTextFieldLearningRate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel19)
+                            .add(jTextFieldMaxError, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(18, 18, 18)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                            .add(jLabel21)
+                            .add(jTextFieldLayers, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                    .add(layout.createSequentialGroup()
+                        .add(18, 18, 18)
+                        .add(jButtonLearnNetwork)
+                        .add(18, 18, 18)
+                        .add(jButtonTestNetwork)))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
 
         pack();
@@ -876,52 +1039,192 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxGoldOutputHighActionPerformed
 
-    private void jTextFieldLearningStartingElementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldLearningStartingElementActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldLearningStartingElementActionPerformed
-
-    private void jTextFieldLearningElementAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldLearningElementAmountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldLearningElementAmountActionPerformed
-
-    private void jTextFieldTestingElementAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTestingElementAmountActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldTestingElementAmountActionPerformed
-
     private void jButtonCreateDataSetCollectionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCreateDataSetCollectionMouseClicked
 
-        ArrayList<Integer> daxInputValuesIndicator = getDaxInputValuesIndicator();
-        ArrayList<Integer> goldInputValuesIndicator = getGoldInputValuesIndicator();
-        ArrayList<Integer> oilInputValuesIndicator = getOilInputValuesIndicator();
+        Integer[] daxInputValuesIndicator = getDaxInputValuesIndicator();
+        Integer[] goldInputValuesIndicator = getGoldInputValuesIndicator();
+        Integer[] oilInputValuesIndicator = getOilInputValuesIndicator();
 
-        ArrayList<Integer> daxOutputValuesIndicator = getDaxOutputValuesIndicator();
-        ArrayList<Integer> goldOutputValuesIndicator = getGoldOutputValuesIndicator();
-        ArrayList<Integer> oilOutputValuesIndicator = getOilOutputValuesIndicator();
+        Integer[] daxOutputValuesIndicator = getDaxOutputValuesIndicator();
+        Integer[] goldOutputValuesIndicator = getGoldOutputValuesIndicator();
+        Integer[] oilOutputValuesIndicator = getOilOutputValuesIndicator();
 
-        Integer oilInputNumber = (Integer) jComboBoxCrudeOilInputNumber.getSelectedItem();
-        Integer goldInputNumber = (Integer) jComboBoxGoldInputNumber.getSelectedItem();
-        Integer daxInputNumber = (Integer) jComboBoxDaxInputNumber.getSelectedItem();
+        Integer oilInputNumber = Integer.parseInt((String) jComboBoxCrudeOilInputNumber.getSelectedItem());
+        Integer goldInputNumber = Integer.parseInt((String) jComboBoxGoldInputNumber.getSelectedItem());
+        Integer daxInputNumber = Integer.parseInt((String) jComboBoxDaxInputNumber.getSelectedItem());
 
-        Integer oilOutputNumber = (Integer) jComboBoxCrudeOilOutputNumber.getSelectedItem();
-        Integer goldOutputNumber = (Integer) jComboBoxGoldOutputNumber.getSelectedItem();
-        Integer daxOutputNumber = (Integer) jComboBoxDaxOutputNumber.getSelectedItem();
+        Integer oilOutputNumber = Integer.parseInt((String) jComboBoxCrudeOilOutputNumber.getSelectedItem());
+        Integer goldOutputNumber = Integer.parseInt((String) jComboBoxGoldOutputNumber.getSelectedItem());
+        Integer daxOutputNumber = Integer.parseInt((String) jComboBoxDaxOutputNumber.getSelectedItem());
 
-        if(jCheckBoxDax.isSelected()){
-            dataSetCollection.addDataSet(dax,daxInputNumber,(Integer[])daxInputValuesIndicator.toArray(),daxOutputNumber,(Integer[])daxOutputValuesIndicator.toArray(),2);
+        Integer daxInOutDistance = Integer.parseInt((String) jComboBoxDaxInOutDistance.getSelectedItem());
+        Integer goldInOutDistance = Integer.parseInt((String) jComboBoxGoldInOutDistance.getSelectedItem());
+        Integer oilInOutDistance = Integer.parseInt((String) jComboBoxCrudeOilInOutDistance.getSelectedItem());
+
+        System.out.println("DIST " + daxInOutDistance);
+
+        dataSetCollection = new DataSetCollection();
+
+        try {
+            if (jCheckBoxDax.isSelected() && ((daxInputNumber > 0 && daxInputValuesIndicator.length > 0) || (daxOutputNumber > 0 && daxOutputValuesIndicator.length > 0))) {
+                dataSetCollection.addDataSet(dax, daxInputNumber, daxInputValuesIndicator, daxOutputNumber, daxOutputValuesIndicator, daxInOutDistance);
+            }
+            if (jCheckBoxCrudeOil.isSelected() && ((oilInputNumber > 0 && oilInputValuesIndicator.length > 0) || (oilOutputNumber > 0 && oilOutputValuesIndicator.length > 0))) {
+                dataSetCollection.addDataSet(oil, oilInputNumber, oilInputValuesIndicator, oilOutputNumber, oilOutputValuesIndicator, goldInOutDistance);
+            }
+            if (jCheckBoxGold.isSelected() && ((goldInputNumber > 0 && goldInputValuesIndicator.length > 0) || (goldOutputNumber > 0 && goldOutputValuesIndicator.length > 0))) {
+                dataSetCollection.addDataSet(gold, goldInputNumber, goldInputValuesIndicator, goldOutputNumber, goldOutputValuesIndicator, oilInOutDistance);
+            }
+
+            for (MyDataSet dataSet : dataSetCollection.dataSets) {
+                System.out.println(dataSet);
+            }
+
+            jButtonCreateNetwork.setEnabled(true);
+            jButtonPrepareLearningSet.setEnabled(true);
+            jButtonPrepareTestingSet.setEnabled(true);
+
+            jLabelCreateDataSetCollection.setText("Created");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-        if(jCheckBoxCrudeOil.isSelected()){
-             dataSetCollection.addDataSet(oil,oilInputNumber,(Integer[])oilInputValuesIndicator.toArray(),oilOutputNumber,(Integer[])oilOutputValuesIndicator.toArray(),2);
-        }
-        if(jCheckBoxGold.isSelected()){
-            
-        }
-        dataSetCollection.addDataSet
 
     }//GEN-LAST:event_jButtonCreateDataSetCollectionMouseClicked
 
     private void jComboBoxDaxInputNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxDaxInputNumberActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxDaxInputNumberActionPerformed
+
+    private void jComboBoxTestingStartElementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTestingStartElementActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTestingStartElementActionPerformed
+
+    private void jComboBoxLearningElementsAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLearningElementsAmountActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxLearningElementsAmountActionPerformed
+
+    private void jComboBoxTestingElementsAmountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTestingElementsAmountActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTestingElementsAmountActionPerformed
+
+    private void jComboBoxLearningStartElementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxLearningStartElementActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxLearningStartElementActionPerformed
+
+    private void jButtonPrepareLearningSetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonPrepareLearningSetMouseClicked
+
+        dataSetCollection.normalize();
+
+        int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
+        String startingDate = (String) jComboBoxLearningStartElement.getSelectedItem();
+
+        try {
+            trainingData.prepareLearningSet(dataSetCollection, trainingElementAmount, startingDate);
+            jLabelPrepareLearningSet.setText("Created");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButtonPrepareLearningSetMouseClicked
+
+    private void jButtonPrepareTestingSetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonPrepareTestingSetMouseClicked
+
+        dataSetCollection.normalize();
+
+        int trainingElementAmount = Integer.parseInt((String) jComboBoxTestingElementsAmount.getSelectedItem());
+        String startingDate = (String) jComboBoxTestingStartElement.getSelectedItem();
+        try {
+            trainingData.prepareTestingSet(dataSetCollection, trainingElementAmount, startingDate);
+            jLabelPrepareTestingSet.setText("Created");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButtonPrepareTestingSetMouseClicked
+
+    private void jButtonCreateNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCreateNetworkMouseClicked
+        Integer nodeInput = 0;
+        Integer nodeOutput = 0;
+        for (MyDataSet ds : dataSetCollection.dataSets) {
+            nodeInput += ds.dataInputNumber * ds.dataInputValuesNumber;
+            nodeOutput += ds.dataOutputNumber * ds.dataOutputValuesNumber;
+        }
+        System.out.println("IN OUT: " + nodeInput + "  " + nodeOutput);
+
+        String[] nodesInner = jTextFieldLayers.getText().split(",");
+        int[] layers = new int[nodesInner.length + 2];
+        layers[0] = nodeInput;
+        layers[layers.length - 1] = nodeOutput;
+        for (int i = 0; i < nodesInner.length; i++) {
+            layers[i + 1] = Integer.parseInt(nodesInner[i]);
+        }
+
+        System.out.println("Layers ");
+        for (int i = 0; i < layers.length; i++) {
+            System.out.print(layers[i] + " ");
+        }
+
+        Double maxError = Double.parseDouble(jTextFieldMaxError.getText());
+        Double learningRate = Double.parseDouble(jTextFieldLearningRate.getText());
+        Integer maxIterations = Integer.parseInt(jTextFieldMaxIterations.getText());
+
+        network = new MultiLayerPerceptron(TransferFunctionType.TANH, layers);
+        network.getLearningRule().setMaxError(maxError);
+        network.getLearningRule().setMaxIterations(maxIterations);
+        network.getLearningRule().setLearningRate(learningRate);
+
+        jButtonLearnNetwork.setEnabled(true);
+        jButtonTestNetwork.setEnabled(true);
+
+        jLabelCreateNetwork.setText("Created");
+    }//GEN-LAST:event_jButtonCreateNetworkMouseClicked
+
+    private void jButtonLearnNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonLearnNetworkMouseClicked
+        network.learn(trainingData.learningSet);
+    }//GEN-LAST:event_jButtonLearnNetworkMouseClicked
+
+    private void jButtonPrepareLearningSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrepareLearningSetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonPrepareLearningSetActionPerformed
+
+    private void jButtonTestNetworkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonTestNetworkMouseClicked
+        
+        result = new double[trainingData.testingSet.size()][trainingData.learningSet.getOutputSize()];
+        System.out.println();
+        System.out.println("Result "+result.length);
+        System.out.println("Result[] "+result[0].length);
+        DataSetRow dataRow;
+        for (int i = 0; i < trainingData.testingSet.size(); i++) {
+            dataRow = trainingData.testingSet.getRowAt(i);
+            System.out.println("\n");
+            System.out.println("First data for test " + dataRow.toString());
+            network.setInput(dataRow.getInput());
+            network.calculate();
+            result[i] = network.getOutput().clone();
+
+            
+            System.out.print("Resul rows ");
+            for (int j = 0; j < result[i].length; j++) {
+                System.out.print(result[i][j]+" ");
+            }
+            
+
+        }
+        System.out.println();
+
+        dataSetCollection.backNormalizatfionInResult(result);
+        
+        dataSetCollection.backNormalization();
+        
+        int trainingElementAmount = Integer.parseInt((String) jComboBoxLearningElementsAmount.getSelectedItem());
+        try {
+            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount,trainingData.testingStartDate , result, "SaveView");
+        } catch (Exception ex) {
+            Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButtonTestNetworkMouseClicked
 
     /**
      * @param args the command line arguments
@@ -936,7 +1239,7 @@ public class View extends javax.swing.JFrame {
         try {
 
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -960,10 +1263,12 @@ public class View extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButtonCreateDataSetCollection;
+    private javax.swing.JButton jButtonCreateNetwork;
+    private javax.swing.JButton jButtonLearnNetwork;
     private javax.swing.JButton jButtonPrepareLearningSet;
     private javax.swing.JButton jButtonPrepareTestingSet;
+    private javax.swing.JButton jButtonTestNetwork;
     private javax.swing.JCheckBox jCheckBoxCrudeOil;
     private javax.swing.JCheckBox jCheckBoxCrudeOilInputAdjacent;
     private javax.swing.JCheckBox jCheckBoxCrudeOilInputClose;
@@ -1003,12 +1308,19 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBoxGoldOutputLow;
     private javax.swing.JCheckBox jCheckBoxGoldOutputOpen;
     private javax.swing.JCheckBox jCheckBoxGoldOutputVolumen;
+    private javax.swing.JComboBox<String> jComboBoxCrudeOilInOutDistance;
     private javax.swing.JComboBox<String> jComboBoxCrudeOilInputNumber;
     private javax.swing.JComboBox<String> jComboBoxCrudeOilOutputNumber;
+    private javax.swing.JComboBox<String> jComboBoxDaxInOutDistance;
     private javax.swing.JComboBox<String> jComboBoxDaxInputNumber;
     private javax.swing.JComboBox<String> jComboBoxDaxOutputNumber;
+    private javax.swing.JComboBox<String> jComboBoxGoldInOutDistance;
     private javax.swing.JComboBox<String> jComboBoxGoldInputNumber;
     private javax.swing.JComboBox<String> jComboBoxGoldOutputNumber;
+    private javax.swing.JComboBox<String> jComboBoxLearningElementsAmount;
+    private javax.swing.JComboBox<String> jComboBoxLearningStartElement;
+    private javax.swing.JComboBox<String> jComboBoxTestingElementsAmount;
+    private javax.swing.JComboBox<String> jComboBoxTestingStartElement;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1023,6 +1335,8 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1030,15 +1344,13 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JTextField jTextFieldInOutDistance;
+    private javax.swing.JLabel jLabelCreateDataSetCollection;
+    private javax.swing.JLabel jLabelCreateNetwork;
+    private javax.swing.JLabel jLabelPrepareLearningSet;
+    private javax.swing.JLabel jLabelPrepareTestingSet;
     private javax.swing.JTextField jTextFieldLayers;
-    private javax.swing.JTextField jTextFieldLearningElementAmount;
     private javax.swing.JTextField jTextFieldLearningRate;
-    private javax.swing.JTextField jTextFieldLearningStartingElement;
     private javax.swing.JTextField jTextFieldMaxError;
     private javax.swing.JTextField jTextFieldMaxIterations;
-    private javax.swing.JTextField jTextFieldTestingElementAmount;
-    private javax.swing.JTextField jTextFieldTestingStartingElement;
     // End of variables declaration//GEN-END:variables
 }

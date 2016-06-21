@@ -54,14 +54,14 @@ class MyDataSet {
     int dataPortionNumber;
     /**
      * Maximum test or train elements which can be created by this dataSet
-     * Maksymalna ilość zestawów danych, jakie jesteśmy wstanie utworzyć
-     * Maybe it should be named maxTrainingElementNumber
+     * Maksymalna ilość zestawów danych, jakie jesteśmy wstanie utworzyć Maybe
+     * it should be named maxTrainingElementNumber
      */
     int maxDataPortionNumber;
 
     double normalizationFactor;
-    double [] maximumValues;
-    
+    double[] maximumValues;
+
     /**
      * It represents the distance beetwen the data which sould be taken as an
      * input and data which sould be taken as an output. It should be minimum 0
@@ -83,15 +83,15 @@ class MyDataSet {
      * MyDataSet descriptor
      */
     String descriptor;
-    
+
     /**
-     * tablice wskazujace, ktore wartosci z signleData.values maja być wciągnięte do wejsc sieci 
+     * tablice wskazujace, ktore wartosci z signleData.values maja być
+     * wciągnięte do wejsc sieci
      */
     Integer[] inValuesIndicator;
     Integer[] outValuesIndicator;
-    
-    
-    boolean isNormalization=false;
+
+    boolean isNormalization = false;
 
     /**
      *
@@ -107,20 +107,20 @@ class MyDataSet {
         this.dataInputValuesNumber = dataSet.dataInputValuesNumber;
         this.dataOutputValuesNumber = dataSet.dataOutputValuesNumber;
         this.maxValuesNumber = dataSet.maxValuesNumber;
-        this.descriptor=dataSet.descriptor;
+        this.descriptor = dataSet.descriptor;
         this.singleDataValuesDescriptor = dataSet.singleDataValuesDescriptor.clone();
-        this.isNormalization=dataSet.isNormalization;
-        this.inOutDataDistance=dataSet.inOutDataDistance;
-        if(dataSet.inValuesIndicator!=null){
-            this.inValuesIndicator=dataSet.inValuesIndicator.clone();
+        this.isNormalization = dataSet.isNormalization;
+        this.inOutDataDistance = dataSet.inOutDataDistance;
+        if (dataSet.inValuesIndicator != null) {
+            this.inValuesIndicator = dataSet.inValuesIndicator.clone();
         }
-        if(dataSet.maximumValues!=null){
-             this.maximumValues = dataSet.maximumValues.clone();
+        if (dataSet.maximumValues != null) {
+            this.maximumValues = dataSet.maximumValues.clone();
         }
-        if(dataSet.outValuesIndicator!=null){
-             this.outValuesIndicator = dataSet.outValuesIndicator.clone();
+        if (dataSet.outValuesIndicator != null) {
+            this.outValuesIndicator = dataSet.outValuesIndicator.clone();
         }
-        
+
         for (SingleData singleData : dataSet.data) {
             SingleData newSingleData = new SingleData(singleData);
             data.add(newSingleData);
@@ -132,44 +132,61 @@ class MyDataSet {
 
     }
 
-    public void setInOutNumbers(int inNumber, Integer[] inValues, int outNumber, Integer[] outValues,int inOutDataDist ) {
-        try{
-            
-        
-        if(inNumber <=0 || inValues==null || outNumber <=0 || outValues==null || inOutDataDist<0){
-            throw new Exception("[MyDataSet,setInOutNumbers] Bad parametrs");
-        }
-        dataInputNumber = inNumber;
-        dataOutputNumber = outNumber;
-        inValuesIndicator=inValues.clone();
-        outValuesIndicator=outValues.clone();
-        dataInputValuesNumber = inValuesIndicator.length;
-        dataOutputValuesNumber = outValuesIndicator.length;
-        inOutDataDistance=inOutDataDist;
-        
-        dataPortionNumber = dataInputNumber + dataOutputNumber;
-        maxDataPortionNumber = data.size() - dataPortionNumber -inOutDataDistance + 1;
-        calculateMaxValuesNumber();
-        }catch(Exception e){
+    public void setInOutNumbers(int inNumber, Integer[] inValues, int outNumber, Integer[] outValues, int inOutDataDist) {
+        try {
+
+            if (inNumber <= 0 || inValues == null || outNumber <= 0 || outValues == null || inOutDataDist < 0) {
+                throw new Exception("[MyDataSet,setInOutNumbers] Bad parametrs");
+            }
+            dataInputNumber = inNumber;
+            dataOutputNumber = outNumber;
+            inValuesIndicator = inValues.clone();
+            outValuesIndicator = outValues.clone();
+            dataInputValuesNumber = inValuesIndicator.length;
+            dataOutputValuesNumber = outValuesIndicator.length;
+            inOutDataDistance = inOutDataDist;
+
+            dataPortionNumber = dataInputNumber + dataOutputNumber;
+            maxDataPortionNumber = data.size() - dataPortionNumber - inOutDataDistance + 1;
+            calculateMaxValuesNumber();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
 
+    
+    /**
+     * Sprawdzamy na ktorej pozycji w data secie znajduje sie single data o podanej jako parametr dacie 
+     * @param date
+     * @return
+     * @throws Exception 
+     */
+    
+     public Integer calculateStartingElement( String date) throws Exception {
+        Integer i = 0;
+        for (SingleData sd : data) {
+            if (sd.date.equals(date)) {
+                return i;
+            }
+            i++;
+        }
+        throw new Exception("[TrainingData,calculateStartindElement] , Recevied date not mach");
+    }
+    
     /*
     public void setInOutNumbers(int inNumber, int [] inValues) {
         setInOutNumbers(inNumber, inValues, 0, null);
     }
-    */
-    
-    public int checkValuesIndicator(){
-        for(int i :this.inValuesIndicator){
-            if (i>this.maxValuesNumber){
+     */
+    public int checkValuesIndicator() {
+        for (int i : this.inValuesIndicator) {
+            if (i > this.maxValuesNumber) {
                 return 0;
             }
         }
-        for(int i :this.inValuesIndicator){
-            if (i>this.maxValuesNumber){
+        for (int i : this.inValuesIndicator) {
+            if (i > this.maxValuesNumber) {
                 return 0;
             }
         }
@@ -192,57 +209,54 @@ class MyDataSet {
 //        }
 //        return maximumValue;
 //    }
-    
-    public void findMaximumValues(){ // tu mozna wsaszic przed find max values number
-        
-        
-        double [] max = new double[this.maxValuesNumber];
+    public void findMaximumValues() { // tu mozna wsaszic przed find max values number
+
+        double[] max = new double[this.maxValuesNumber];
         System.out.println("Max initiation" + max[0]);
-        for(SingleData singleData: data){
-            for(int i=0;i<maxValuesNumber;i++){
-                if(singleData.values[i]>max[i]){
-                    max[i]=singleData.values[i];
+        for (SingleData singleData : data) {
+            for (int i = 0; i < maxValuesNumber; i++) {
+                if (singleData.values[i] > max[i]) {
+                    max[i] = singleData.values[i];
                 }
             }
         }
-        maximumValues=max.clone();
+        maximumValues = max.clone();
     }
+
     /**
      * The maximum value used for normalization is different for all the values
-     * for singleData.values 
-     * Example for every singleValue from this.data the
-     * values[0] refeer to the same maximum value , it means
-     * data[0].values[0] refeer to the same maximum value what
-     * data[1].values[0]
-     * The value from signelData.values() has same maximum value parametr used
-     * for normalization if they are on the same position int the table 
-     * 
+     * for singleData.values Example for every singleValue from this.data the
+     * values[0] refeer to the same maximum value , it means data[0].values[0]
+     * refeer to the same maximum value what data[1].values[0] The value from
+     * signelData.values() has same maximum value parametr used for
+     * normalization if they are on the same position int the table
+     *
      */
-    public void normalize(){
-        if(isNormalization==false){
+    public void normalize() {
+        if (isNormalization == false) {
             findMaximumValues();
-            for(SingleData singleData: data){
-                for(int i=0; i< singleData.values.length;i++){
-                    singleData.values[i]=singleData.values[i]/ maximumValues[i] * 0.8;
-                   // System.out.println(singleData.values[i]);
+            for (SingleData singleData : data) {
+                for (int i = 0; i < singleData.values.length; i++) {
+                    singleData.values[i] = singleData.values[i] / maximumValues[i] * 0.8;
+                    // System.out.println(singleData.values[i]);
                 }
             }
         }
-        isNormalization=true;
+        isNormalization = true;
     }
-    
-    public void backNormalize(){
-        if(isNormalization==true){
-            for(SingleData singleData: data){
-                for(int i=0; i<maxValuesNumber;i++){
-                    singleData.values[i]=singleData.values[i]* maximumValues[i] / 0.8;
+
+    public void backNormalize() {
+        if (isNormalization == true) {
+            for (SingleData singleData : data) {
+                for (int i = 0; i < maxValuesNumber; i++) {
+                    singleData.values[i] = singleData.values[i] * maximumValues[i] / 0.8;
                     System.out.println(singleData.values[i]);
                 }
             }
         }
-        isNormalization=false;
+        isNormalization = false;
     }
-    
+
 //    public void normalize() {
 //        findMaximumValue();
 //        for (SingleData singleData : data) {
@@ -252,7 +266,6 @@ class MyDataSet {
 //            }
 //        }
 //    }
-
 //    public void backNormalization() {
 //        for (SingleData singleData : data) {
 //            for (int i=0;i<maxValuesNumber;i++) {
@@ -261,7 +274,6 @@ class MyDataSet {
 //            }
 //        }
 //    }
-
     public void reverse() {
         Collections.reverse(data);
     }
@@ -274,6 +286,8 @@ class MyDataSet {
         }
         return s;
     }
+    
+    
 
 }
 
@@ -303,31 +317,25 @@ public class DataSetCollection {
      * output for the network
      *
      */
-    public void addDataSet(MyDataSet InputMyDataSet, int dataInputNumber, Integer [] dataInputIndicator, int dataOutputNumber, Integer [] dataOutputIndicator, int inOutDataDistance) {
-        try {
-            InputMyDataSet.calculateMaxValuesNumber();
-    
-            int dataPortionNumber = dataInputNumber + dataOutputNumber;
-            
-            if (dataPortionNumber > InputMyDataSet.data.size()) {
-                throw new Exception("[DataSetCollection,addDataSet] dataPortionNumber> MyDataSet.size()");
-            }else if(dataInputIndicator.length>InputMyDataSet.maxValuesNumber || dataOutputIndicator.length>InputMyDataSet.maxValuesNumber){
-                throw new Exception("[DataSetCollection,addDataSet] valuesNumber>MyDataSet.maxValuesNumber");
-            }
-            else {
-                MyDataSet dataSet = new MyDataSet(InputMyDataSet);
-                dataSet.setInOutNumbers(dataInputNumber, dataInputIndicator, dataOutputNumber, dataOutputIndicator,inOutDataDistance);
-                if(dataSet.checkValuesIndicator()==1){
-                    dataSets.add(dataSet);
-                }else{
-                   throw new Exception("[DataSetCollection,addDataSet] dataSet.checkValuesIndicator error"); 
-                }
-                
+    public void addDataSet(MyDataSet InputMyDataSet, int dataInputNumber, Integer[] dataInputIndicator, int dataOutputNumber, Integer[] dataOutputIndicator, int inOutDataDistance) throws Exception {
+
+        InputMyDataSet.calculateMaxValuesNumber();
+
+        int dataPortionNumber = dataInputNumber + dataOutputNumber;
+
+        if (dataPortionNumber > InputMyDataSet.data.size()) {
+            throw new Exception("[DataSetCollection,addDataSet] dataPortionNumber> MyDataSet.size()");
+        } else if (dataInputIndicator.length > InputMyDataSet.maxValuesNumber || dataOutputIndicator.length > InputMyDataSet.maxValuesNumber) {
+            throw new Exception("[DataSetCollection,addDataSet] valuesNumber>MyDataSet.maxValuesNumber");
+        } else {
+            MyDataSet dataSet = new MyDataSet(InputMyDataSet);
+            dataSet.setInOutNumbers(dataInputNumber, dataInputIndicator, dataOutputNumber, dataOutputIndicator, inOutDataDistance);
+            if (dataSet.checkValuesIndicator() == 1) {
+                dataSets.add(dataSet);
+            } else {
+                throw new Exception("[DataSetCollection,addDataSet] dataSet.checkValuesIndicator error");
             }
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
     }
@@ -343,47 +351,52 @@ public class DataSetCollection {
             dataSet.backNormalize();
         }
     }
-    
-    public void backNormalizatfionInResult(double [][] result){
+
+    public void backNormalizatfionInResult(double[][] result) {
         ArrayList<Double> maximumValues = new ArrayList<Double>();
-        for(MyDataSet dataSet: dataSets){
-          
-                for(int j=0;j<dataSet.dataOutputValuesNumber;j++){
-                    maximumValues.add(dataSet.maximumValues[dataSet.outValuesIndicator[j]]);
-                }
-            
-        }
-  
-        for(int i=0;i<result.length;i++){  
-             System.out.println("Result set ");
-            for(int j=0;j<result[i].length;j++){
-              
-                result[i][j]=result[i][j]*maximumValues.get(j)/0.8;
-                System.out.println("result after "+result[i][j]);
+        for (MyDataSet dataSet : dataSets) {
+            System.out.println("Values indicator lenght: " + dataSet.outValuesIndicator.length);
+            System.out.println(dataSet.outValuesIndicator[0]);
+            System.out.println(dataSet.maximumValues[dataSet.outValuesIndicator[0]]);
+            for (int j = 0; j < dataSet.dataOutputValuesNumber; j++) {
+                maximumValues.add(dataSet.maximumValues[dataSet.outValuesIndicator[j]]);
             }
-             
-          
+
+        }
+        System.out.println("Result set back normalization process");
+        
+        System.out.println("Result leng " + result.length);
+        for (int i = 0; i < result.length; i++) {
+            System.out.println("Row: ");
+            System.out.println("Result[i] "+ result[i].length);
+            int indicator = 0;
+            for (int j = 0; j < result[i].length; j++) {
+
+                result[i][j] = result[i][j] * maximumValues.get(indicator) / 0.8;   // tu jest walek przy makximum values jak jest wiecej niz jeden result zwracany, tzn np 1 wiersz resulta stanowi 2 dni
+                System.out.print(result[i][j]+" ");
+                indicator++;
+                if(indicator == maximumValues.size()){
+                    indicator = 0;
+                }
+            }
+
         }
     }
 
-    public int findMaximumDataPortion() {
-        try {
-            if (dataSets.size() == 0) {
-                throw new Exception("[DataSetCollection,finMaximumDataPortion] dataSets.size=0");
-            }
-            int min = dataSets.get(0).maxDataPortionNumber;
-            for (MyDataSet dataSet : dataSets) {
-                if (dataSet.maxDataPortionNumber < min) {
-                    min = dataSet.maxDataPortionNumber;
-                }
-            }
-            maxDataPortionNumber = min;
-            return maxDataPortionNumber;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return 0;
+    public int findMaximumDataPortion() throws Exception {
+
+        if (dataSets.size() == 0) {
+            throw new Exception("[DataSetCollection,finMaximumDataPortion] dataSets.size=0");
         }
+        int min = dataSets.get(0).maxDataPortionNumber;
+        for (MyDataSet dataSet : dataSets) {
+            if (dataSet.maxDataPortionNumber < min) {
+                min = dataSet.maxDataPortionNumber;
+            }
+        }
+        maxDataPortionNumber = min;
+        return maxDataPortionNumber;
+
     }
 
     @Override

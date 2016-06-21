@@ -32,7 +32,7 @@ public class main {
         MyDataSet set = new MyDataSet();
 
         DataSetCollection dataSetCollectionForTeaching = new DataSetCollection();
-        dataSetCollectionForTeaching.addDataSet(DSdax150, 5, new int[]{0, 1}, 1, new int[]{0, 1}, 1);  // tu mozna by przekazywac arraylist a nie data loadera
+        dataSetCollectionForTeaching.addDataSet(DSdax150, 5, new Integer[]{0, 1}, 1, new Integer[]{0, 1}, 1);  // tu mozna by przekazywac arraylist a nie data loadera
         //     dataSetCollectionForTeaching.addDataSet(DSdax150, 2, new int[]{0, 2}, 2, new int[]{ 1, 2},0);
         //     System.out.println(dataSetCollectionForTeaching.dataSets.get(0));
         //   dataSetCollectionForTeaching.normalize();
@@ -45,9 +45,9 @@ public class main {
         System.out.println(dataSetCollectionForTeaching.dataSets.get(0));
 
         TrainingData trainingData = new TrainingData();
-        trainingData.prepareLearningSet(dataSetCollectionForTeaching, 10);
+        trainingData.prepareLearningSet(dataSetCollectionForTeaching, 10,2);
         dataSetCollectionForTeaching.normalize();
-        trainingData.prepareLearningSet(dataSetCollectionForTeaching, 20);
+        trainingData.prepareLearningSet(dataSetCollectionForTeaching, 20,4);
         trainingData.prepareTestingSet(dataSetCollectionForTeaching, 5, 0);
 
         int maxIterations = 10000;
