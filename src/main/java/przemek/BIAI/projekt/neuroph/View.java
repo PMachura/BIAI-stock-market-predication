@@ -42,9 +42,9 @@ public class View extends javax.swing.JFrame {
 
         initComponents();
         try {
-            dataFileHandler.loadData("testSet.txt", dax);
-            dataFileHandler.loadData("testSet.txt", oil);
-            dataFileHandler.loadData("testSet.txt", gold);
+            dataFileHandler.loadData("DAX300.txt", dax);
+            dataFileHandler.loadData("CrudeOil300.txt", oil);
+            dataFileHandler.loadData("Gold300.txt", gold);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -430,6 +430,7 @@ public class View extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jCheckBoxDaxInputOpen.setSelected(true);
         jCheckBoxDaxInputOpen.setText("Open");
         jCheckBoxDaxInputOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -465,6 +466,7 @@ public class View extends javax.swing.JFrame {
 
         jLabel5.setText("Output");
 
+        jCheckBoxDaxOutputOpen.setSelected(true);
         jCheckBoxDaxOutputOpen.setText("Open");
         jCheckBoxDaxOutputOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -509,6 +511,7 @@ public class View extends javax.swing.JFrame {
 
         jLabel9.setText("Output");
 
+        jCheckBoxCrudeOilInputOpen.setSelected(true);
         jCheckBoxCrudeOilInputOpen.setText("Open");
         jCheckBoxCrudeOilInputOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -570,6 +573,7 @@ public class View extends javax.swing.JFrame {
 
         jLabel13.setText("Output");
 
+        jCheckBoxGoldInputOpen.setSelected(true);
         jCheckBoxGoldInputOpen.setText("Open");
         jCheckBoxGoldInputOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -613,10 +617,13 @@ public class View extends javax.swing.JFrame {
             }
         });
 
+        jCheckBoxDax.setSelected(true);
         jCheckBoxDax.setText("DAX");
 
+        jCheckBoxCrudeOil.setSelected(true);
         jCheckBoxCrudeOil.setText("Crude Oil");
 
+        jCheckBoxGold.setSelected(true);
         jCheckBoxGold.setText("Gold");
 
         jButtonPrepareLearningSet.setText("Prepare learning set");
@@ -662,7 +669,7 @@ public class View extends javax.swing.JFrame {
 
         jTextFieldMaxError.setText("0.001");
 
-        jTextFieldLayers.setText("Layers");
+        jTextFieldLayers.setText("31,31,31");
 
         jComboBoxDaxInputNumber.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1007,15 +1014,16 @@ public class View extends javax.swing.JFrame {
                             .add(jButtonCreateDataSetCollection)
                             .add(jLabelCreateDataSetCollection))
                         .add(44, 44, 44)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel14)
-                            .add(jComboBoxLearningElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel16)
-                            .add(jComboBoxLearningStartElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(jButtonCreateNetwork)
-                            .add(jLabelCreateNetwork)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabelCreateNetwork)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                .add(jLabel14)
+                                .add(jComboBoxLearningElementsAmount, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jLabel16)
+                                .add(jComboBoxLearningStartElement, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jLabel20, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jTextFieldMaxIterations, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(jButtonCreateNetwork))))
                     .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                         .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -1352,8 +1360,7 @@ public class View extends javax.swing.JFrame {
         Double learningRate = Double.parseDouble(jTextFieldLearningRate.getText());
         Integer maxIterations = Integer.parseInt(jTextFieldMaxIterations.getText());
 
-        network = new MultiLayerPerceptron(TransferFunctionType.TANH, layers);
-    
+        network = new MultiLayerPerceptron(TransferFunctionType.LOG, layers);
         network.getLearningRule().setMaxError(maxError);
         network.getLearningRule().setMaxIterations(maxIterations);
         network.getLearningRule().setLearningRate(learningRate);
@@ -1401,7 +1408,7 @@ public class View extends javax.swing.JFrame {
         fileName+=".txt";
         
         try {
-            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingElementAmount, trainingData.testingStartDate, result, fileName);
+            dataFileHandler.saveDataSetCollectinForTest(dataSetCollection, trainingData.testingSet.size(), trainingData.testingStartDate, result, fileName);
             setLabelsButtonsAfterNetworkTesting();
         } catch (Exception ex) {
             Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);

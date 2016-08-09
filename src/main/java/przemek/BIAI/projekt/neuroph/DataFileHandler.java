@@ -81,7 +81,7 @@ public class DataFileHandler {
                 }
                 for (i = 1; i < 4; i++) {   // for (i = 1; i < trimed.length; i++) {  wczesniejasz wersja
                     trimedDouble[i - 1] = Double.parseDouble(trimed[i]);
-                    System.out.println("TRIMED DOUBLE " + trimedDouble[i - 1]);
+                  //  System.out.println("TRIMED DOUBLE " + trimedDouble[i - 1]);
                 }
 
                 SingleData singleData = new SingleData(trimed[0], trimedDouble);
@@ -286,6 +286,8 @@ public class DataFileHandler {
         String input = "";
         String output = "";
         String tabulator = "";
+        String inputDate="";
+        String outputDate="";
         // out.println("\n");
 
         out.println("Single data values descriptors"); //Podajemy z ktorych konkretnie elementow zbiorow danych wypisanych powyzej zbudowana jest siec(Np . dax - open, high)
@@ -330,17 +332,20 @@ public class DataFileHandler {
 
             input = "";
             output = "";
+            inputDate="";
+            outputDate="";
 
             Integer dataSetIndicator = 0;
             for (MyDataSet dataSet : dataSetCollection.dataSets) { //to mozna przestawic wyzej zeby tu tego nie cisnac caly czas
 
-                if (dataSet.maxDataPortionNumber < (trainingElementAmount + startingRow.get(dataSetIndicator))) {
+                if (dataSet.maxDataPortionNumber + 1 < (trainingElementAmount + startingRow.get(dataSetIndicator))) {
                     throw new Exception("[TrainingData,prepareTrainingSet] , trainingElementAmount greater then DataSet.maxDataPortionNumber");
 
                 } else { //wypisujemy wartosci jakie zostaly uzyte w celu przewidywania wyniku
                     for (int k = 0; k < dataSet.dataInputNumber; k++) {
                         for (int l = 0; l < dataSet.dataInputValuesNumber; l++) {
                             input += Double.toString(dataSet.data.get(i + k + startingRow.get(dataSetIndicator)).values[dataSet.inValuesIndicator[l]]) + "\t";
+                            inputDate += (dataSet.data.get(i + k + startingRow.get(dataSetIndicator)).date) + "\t";
                             //  System.out.println("iput[" + l + "] " + input.get(l));
                             tabulator += "\t";
                         }
@@ -350,7 +355,9 @@ public class DataFileHandler {
                        ale jest to testowy program akademicki, w celu weryfikacji dzialania sieci testujemy wartosci, ktore znamy */
                     for (int k = 0; k < dataSet.dataOutputNumber; k++) {
                         for (int l = 0; l < dataSet.dataOutputValuesNumber; l++) {
+                            
                             output += Double.toString(dataSet.data.get(i + k + dataSet.dataInputNumber + dataSet.inOutDataDistance + startingRow.get(dataSetIndicator)).values[dataSet.outValuesIndicator[l]]) + "\t";
+                            outputDate += (dataSet.data.get(i + k + dataSet.dataInputNumber + dataSet.inOutDataDistance + startingRow.get(dataSetIndicator)).date) + "\t";
                         }
 
                     }
@@ -359,6 +366,9 @@ public class DataFileHandler {
                 dataSetIndicator++;
             }
 
+            out.print(inputDate + "\t");
+            out.print(outputDate);
+            out.println();
             out.print(input + "\t");
             out.print(output);
             out.println();

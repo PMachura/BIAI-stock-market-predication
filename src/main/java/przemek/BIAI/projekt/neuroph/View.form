@@ -312,15 +312,17 @@
                           <Component id="jLabelCreateDataSetCollection" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jComboBoxLearningElementsAmount" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jComboBoxLearningStartElement" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel20" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                          <Component id="jTextFieldMaxIterations" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButtonCreateNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabelCreateNetwork" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBoxLearningElementsAmount" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBoxLearningStartElement" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel20" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="jTextFieldMaxIterations" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jButtonCreateNetwork" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
                   <Group type="103" alignment="0" groupAlignment="1" attributes="0">
@@ -525,6 +527,7 @@
   <SubComponents>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxInputOpen">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Open"/>
       </Properties>
       <Events>
@@ -589,6 +592,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDaxOutputOpen">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Open"/>
       </Properties>
       <Events>
@@ -671,6 +675,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOilInputOpen">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Open"/>
       </Properties>
       <Events>
@@ -775,6 +780,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGoldInputOpen">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Open"/>
       </Properties>
       <Events>
@@ -832,16 +838,19 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxDax">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="DAX"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxCrudeOil">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Crude Oil"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="jCheckBoxGold">
       <Properties>
+        <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="Gold"/>
       </Properties>
     </Component>
@@ -921,7 +930,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldLayers">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Layers"/>
+        <Property name="text" type="java.lang.String" value="31,31,31"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="jComboBoxDaxInputNumber">

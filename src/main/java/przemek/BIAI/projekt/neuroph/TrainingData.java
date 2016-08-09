@@ -6,14 +6,10 @@
 package przemek.BIAI.projekt.neuroph;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Vector;
 
-import org.neuroph.core.NeuralNetwork;
-import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.core.data.DataSet;
 import org.neuroph.core.data.DataSetRow;
-import org.neuroph.util.TransferFunctionType;
+
 //import org.neuroph.core.learning.SupervisedTrainingElement;
 //import org.neuroph.core.learning.TrainingElement;
 //import org.neuroph.core.learning.TrainingSet;
